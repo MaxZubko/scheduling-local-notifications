@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:scheduling_local_notifications_app/constants/constants.dart'
     as constants;
 
-class DefaultButton extends StatefulWidget {
+class CardButton extends StatefulWidget {
   final String title;
-  final bool isDisableBtn;
   final Function() onPressed;
-  final String? iconPath;
-  const DefaultButton({
+  final bool isDisableBtn;
+  const CardButton({
     super.key,
-    this.isDisableBtn = false,
-    required this.title,
     required this.onPressed,
-    this.iconPath,
+    required this.title,
+    this.isDisableBtn = false,
   });
 
   @override
-  State<DefaultButton> createState() => _DefaultButtonState();
+  State<CardButton> createState() => _CardButtonState();
 }
 
-class _DefaultButtonState extends State<DefaultButton> {
+class _CardButtonState extends State<CardButton> {
   late Color buttonColor;
 
   @override
@@ -31,7 +28,7 @@ class _DefaultButtonState extends State<DefaultButton> {
   }
 
   @override
-  void didUpdateWidget(DefaultButton oldWidget) {
+  void didUpdateWidget(CardButton oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (widget.isDisableBtn != oldWidget.isDisableBtn) {
@@ -71,29 +68,20 @@ class _DefaultButtonState extends State<DefaultButton> {
         }
       },
       child: Container(
-        height: 56,
+        // width: 158,
+        height: 40,
         decoration: BoxDecoration(
-          color: buttonColor,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(8),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: buttonColor,
           ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (widget.iconPath != null)
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: SvgPicture.asset(
-                  widget.iconPath!,
-                  color: constants.Colors.white,
-                ),
-              ),
-            Text(
-              widget.title,
-              style: constants.Styles.robotoWhiteS16W700,
-            ),
-          ],
+        alignment: Alignment.center,
+        // padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Text(
+          widget.title,
+          style:
+              constants.Styles.robotoPurpleS14W700.copyWith(color: buttonColor),
         ),
       ),
     );
