@@ -6,8 +6,11 @@ import 'state/state.dart';
 
 void main() async {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => AuthProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => SwitchProvider()),
+      ],
       child: const MyApp(),
     ),
   );
