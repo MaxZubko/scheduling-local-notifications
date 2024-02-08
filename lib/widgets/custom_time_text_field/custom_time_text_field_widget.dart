@@ -45,6 +45,8 @@ class CustomTimeTextFieldWidget extends StatelessWidget {
                 keyboardType: TextInputType.number,
                 focusNode: focusNodesList[textFieldIndex],
                 onChanged: (value) {
+                  //TODO max value for hours and minutes
+
                   onChanged(value);
                   if (value.isNotEmpty) {
                     switchToNextTextField(

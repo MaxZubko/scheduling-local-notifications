@@ -6,4 +6,12 @@ mixin Assets {
   static const String recurring = 'assets/icons/recurring.svg';
   static const String addIcon = 'assets/icons/add.svg';
   static const String removeIcon = 'assets/icons/remove.svg';
+  static const String imageIcon = 'assets/icons/image_icon.svg';
+  // icon modal
+  static const String businessIcon = 'assets/icons/business_icon.svg';
+  static const String listIcon = 'assets/icons/list_icon.svg';
+  static const String personCheckIcon = 'assets/icons/person_check_icon.svg';
+  static const String notificationIcon = 'assets/icons/notifications_icon.svg';
+  static const String closeIcon = 'assets/icons/close_icon.svg';
+  static const String errorPurpleIcon = 'assets/icons/error_purple_icon.svg';
 }

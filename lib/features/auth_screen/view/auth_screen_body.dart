@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:scheduling_local_notifications_app/features/auth_screen/auth.dart';
 import 'package:scheduling_local_notifications_app/constants/constants.dart'
     as constants;
+import 'package:scheduling_local_notifications_app/services/database/src/database_methods.dart';
 import 'package:scheduling_local_notifications_app/state/state.dart';
 import 'package:scheduling_local_notifications_app/widgets/widgets.dart';
 
@@ -102,9 +102,13 @@ class _AuthScreenBodyState extends State<AuthScreenBody> {
                     title: 'Confirm',
                     isDisableBtn: isDisableBtn,
                     onPressed: () {
+                      final database = DatabaseMethods();
+
                       FocusScope.of(context).unfocus();
 
                       submitForm();
+
+                      database.getUser();
                     },
                   ),
                 ),

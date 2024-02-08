@@ -8,7 +8,7 @@ part of 'notify_model.dart';
 
 class NotifyModelAdapter extends TypeAdapter<NotifyModel> {
   @override
-  final int typeId = 0;
+  final int typeId = 1;
 
   @override
   NotifyModel read(BinaryReader reader) {
@@ -21,13 +21,18 @@ class NotifyModelAdapter extends TypeAdapter<NotifyModel> {
       message: fields[1] == null ? '' : fields[1] as String,
       iconPath: fields[2] == null ? '' : fields[2] as String,
       isOneTime: fields[3] == null ? false : fields[3] as bool,
+      notifyBackgroundColors: fields[4] == null
+          ? NotifyBackgroundColors.grey
+          : fields[4] as NotifyBackgroundColors,
+      timestamp: fields[5] == null ? 0 : fields[5] as int,
+      recurring: fields[6] == null ? 1 : fields[6] as int?,
     );
   }
 
   @override
   void write(BinaryWriter writer, NotifyModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.time)
       ..writeByte(1)
@@ -35,7 +40,13 @@ class NotifyModelAdapter extends TypeAdapter<NotifyModel> {
       ..writeByte(2)
       ..write(obj.iconPath)
       ..writeByte(3)
-      ..write(obj.isOneTime);
+      ..write(obj.isOneTime)
+      ..writeByte(4)
+      ..write(obj.notifyBackgroundColors)
+      ..writeByte(5)
+      ..write(obj.timestamp)
+      ..writeByte(6)
+      ..write(obj.recurring);
   }
 
   @override

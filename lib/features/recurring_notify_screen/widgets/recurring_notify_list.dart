@@ -6,16 +6,16 @@ import 'package:scheduling_local_notifications_app/models/models.dart';
 import '../../../enums/enums.dart';
 import '../../../widgets/widgets.dart';
 
-class OneTimeNotifyList extends StatelessWidget {
-  final List<NotifyModel> onTimeNotifyList;
-  const OneTimeNotifyList({
+class RecurringNotifyList extends StatelessWidget {
+  final List<NotifyModel> recurringNotifyList;
+  const RecurringNotifyList({
     super.key,
-    required this.onTimeNotifyList,
+    required this.recurringNotifyList,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (onTimeNotifyList.isNotEmpty) {
+    if (recurringNotifyList.isNotEmpty) {
       return _notifyCard();
     } else {
       return const Padding(
@@ -31,10 +31,10 @@ class OneTimeNotifyList extends StatelessWidget {
   Widget _notifyCard() {
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: onTimeNotifyList.length,
+      itemCount: recurringNotifyList.length,
       shrinkWrap: true,
       itemBuilder: (context, index) {
-        final NotifyModel notify = onTimeNotifyList[index];
+        final NotifyModel notify = recurringNotifyList[index];
         final bool isIconPath = notify.iconPath != NotifyIconsEnums.none.path;
         final Color cardColor =
             notify.notifyBackgroundColors == NotifyBackgroundColors.none
@@ -44,10 +44,10 @@ class OneTimeNotifyList extends StatelessWidget {
         return Padding(
           padding: EdgeInsets.only(
             top: 16,
-            bottom: index == onTimeNotifyList.length - 1 ? 24 : 0,
+            bottom: index == recurringNotifyList.length - 1 ? 24 : 0,
           ),
           child: NotifyCardWidget(
-            notifyList: onTimeNotifyList,
+            notifyList: recurringNotifyList,
             notify: notify,
             cardColor: cardColor,
             isIconPath: isIconPath,

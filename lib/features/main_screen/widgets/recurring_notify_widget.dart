@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scheduling_local_notifications_app/constants/constants.dart'
     as constants;
+import 'package:scheduling_local_notifications_app/router/router.dart';
 
 class RecurringNotifyWidget extends StatelessWidget {
   const RecurringNotifyWidget({super.key});
@@ -15,16 +17,21 @@ class RecurringNotifyWidget extends StatelessWidget {
         color: constants.Colors.greyLight,
         context: context,
         tiles: [
-          _buildListTile('1 Minute'),
-          _buildListTile('3 Minute'),
-          _buildListTile('5 Minute'),
+          _buildListTile(context, '1 Minute', 1),
+          _buildListTile(context, '3 Minute', 3),
+          _buildListTile(context, '5 Minute', 5),
         ],
       ).toList(),
     );
   }
 
-  ListTile _buildListTile(String title) {
+  ListTile _buildListTile(BuildContext context, String title, int recurring) {
     return ListTile(
+      onTap: () {
+        context.pushRoute(
+          RecurringNotifyRoute(recurring: recurring),
+        );
+      },
       title: Text(
         title,
         style: constants.Styles.robotoDarkS16W700,
