@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:scheduling_local_notifications_app/constants/constants.dart'
     as constants;
 
@@ -73,7 +74,7 @@ class NotifyCardWidget extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  final database = DatabaseMethods();
+                  final DatabaseMethods database = GetIt.I<DatabaseMethods>();
 
                   database.removeNotification(
                     timestamp: notify.timestamp,

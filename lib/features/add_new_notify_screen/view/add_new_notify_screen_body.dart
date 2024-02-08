@@ -11,6 +11,8 @@ import 'package:scheduling_local_notifications_app/widgets/widgets.dart';
 import '../../../state/state.dart';
 import '../add_new_notify.dart';
 
+import 'package:get_it/get_it.dart';
+
 class AddNewNotifyScreenBody extends StatefulWidget {
   final int? recurring;
   const AddNewNotifyScreenBody({
@@ -96,7 +98,7 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
                         title: 'Confirm',
                         isDisableBtn: isDisableBtn,
                         onPressed: () {
-                          final database = DatabaseMethods();
+                          final database = GetIt.I<DatabaseMethods>();
 
                           if (newNotifyProvider.notifyTime.isNotEmpty) {
                             database
