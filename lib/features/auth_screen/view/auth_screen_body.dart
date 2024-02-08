@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scheduling_local_notifications_app/constants/constants.dart'
@@ -102,7 +103,8 @@ class _AuthScreenBodyState extends State<AuthScreenBody> {
                     title: 'Confirm',
                     isDisableBtn: isDisableBtn,
                     onPressed: () {
-                      final database = DatabaseMethods();
+                      final DatabaseMethods database =
+                          GetIt.I<DatabaseMethods>();
 
                       FocusScope.of(context).unfocus();
 
