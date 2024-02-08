@@ -15,10 +15,22 @@ mixin Styles {
     fontWeight: FontWeight.w700,
   );
 
+  static const TextStyle robotoGreyS16W400 = TextStyle(
+    color: colors.Colors.grey,
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+  );
+
   static const TextStyle robotoGreyDarkS16W400 = TextStyle(
     color: colors.Colors.greyDark,
     fontSize: 16,
     fontWeight: FontWeight.w400,
+  );
+
+  static const TextStyle robotoGreyDarkS16W500 = TextStyle(
+    color: colors.Colors.greyDark,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
   );
 
   static const TextStyle robotoGreyDarkS14W400 = TextStyle(
@@ -28,6 +40,12 @@ mixin Styles {
   );
 
   // dark
+  static const TextStyle robotoDarkS14W500 = TextStyle(
+    color: colors.Colors.mainDark,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+  );
+
   static const TextStyle robotoDarkS14W700 = TextStyle(
     color: colors.Colors.mainDark,
     fontSize: 14,
@@ -43,6 +61,12 @@ mixin Styles {
   static const TextStyle robotoDarkS16W700 = TextStyle(
     color: colors.Colors.mainDark,
     fontSize: 16,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const TextStyle robotoDarkS20W700 = TextStyle(
+    color: colors.Colors.mainDark,
+    fontSize: 20,
     fontWeight: FontWeight.w700,
   );
 

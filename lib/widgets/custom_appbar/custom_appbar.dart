@@ -1,8 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scheduling_local_notifications_app/constants/constants.dart'
     as constants;
-import 'package:scheduling_local_notifications_app/features/main_screen/main_screen.dart';
+import 'package:scheduling_local_notifications_app/features/main_screen/main.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -29,7 +30,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             child: Row(
               children: [
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    context.popRoute();
+                  },
                   child: Container(
                     width: 40,
                     height: 30,
@@ -67,6 +70,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => Size.fromHeight(
-        isExpandedAppBar ? (kToolbarHeight + 70) : kToolbarHeight + 20,
+        isExpandedAppBar ? (kToolbarHeight + 70) : kToolbarHeight,
       );
 }

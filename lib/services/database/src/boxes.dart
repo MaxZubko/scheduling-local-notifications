@@ -1,9 +1,8 @@
 import 'package:hive/hive.dart';
+import 'package:scheduling_local_notifications_app/models/models.dart';
 
-import '../../../models/notify_model/notify_model.dart';
 import '../../services.dart';
 
 class Boxes {
-  static Box<NotifyModel> getUser() =>
-      Hive.box<NotifyModel>(Database.notifyKey);
+  static Box<UserModel> getUser() => Hive.box<UserModel>(Database.user);
 }
