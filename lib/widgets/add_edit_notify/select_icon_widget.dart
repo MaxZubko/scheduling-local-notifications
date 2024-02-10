@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scheduling_local_notifications_app/constants/constants.dart'
     as constants;
-import 'package:scheduling_local_notifications_app/features/add_new_notify_screen/add_new_notify.dart';
 import 'package:scheduling_local_notifications_app/widgets/widgets.dart';
 
 import '../../../enums/enums.dart';

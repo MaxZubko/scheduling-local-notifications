@@ -6,7 +6,8 @@ import 'package:scheduling_local_notifications_app/constants/constants.dart'
 import 'package:scheduling_local_notifications_app/widgets/widgets.dart';
 
 import '../../../enums/enums.dart';
-import '../add_new_notify.dart';
+import 'background_colors_list.dart';
+import 'notify_icons_list.dart';
 
 class IconModalView extends StatefulWidget {
   final NotifyBackgroundColors selectedColor;
