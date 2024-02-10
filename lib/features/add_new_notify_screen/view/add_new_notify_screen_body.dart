@@ -4,10 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scheduling_local_notifications_app/constants/constants.dart'
     as constants;
+import 'package:scheduling_local_notifications_app/features/utils/helpers/notify_id_helper.dart';
 import 'package:scheduling_local_notifications_app/models/models.dart';
-import 'package:scheduling_local_notifications_app/services/database/src/database_methods.dart';
 import 'package:scheduling_local_notifications_app/widgets/widgets.dart';
 
+import '../../../services/services.dart';
 import '../../../state/state.dart';
 import '../add_new_notify.dart';
 
@@ -98,27 +99,10 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
                         title: 'Confirm',
                         isDisableBtn: isDisableBtn,
                         onPressed: () {
-                          final database = GetIt.I<DatabaseMethods>();
-
-                          if (newNotifyProvider.notifyTime.isNotEmpty) {
-                            database
-                                .addOneTimeNotification(
-                                  NotifyModel(
-                                    time: newNotifyProvider.notifyTime,
-                                    message: _controllerMessage.text,
-                                    iconPath: newNotifyProvider.notifyIconPath,
-                                    isOneTime: provider.isOnTimeSelected,
-                                    notifyBackgroundColors:
-                                        newNotifyProvider.notifyBackColor,
-                                    timestamp:
-                                        newNotifyProvider.notifyTimestamp,
-                                    recurring: widget.recurring,
-                                  ),
-                                )
-                                .then(
-                                  (value) => AutoRouter.of(context).pop(),
-                                );
-                          }
+                          addNotify(
+                            newNotifyProvider: newNotifyProvider,
+                            provider: provider,
+                          );
                         },
                       )
                     ],
@@ -233,5 +217,68 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
     } else {
       return 'every ${widget.recurring} minute';
     }
+  }
+
+  Future<void> addNotify({
+    required NewNotificationProvider newNotifyProvider,
+    required SwitchProvider provider,
+  }) async {
+    final database = GetIt.I<DatabaseMethods>();
+
+    if (newNotifyProvider.notifyTime.isNotEmpty) {
+      bool isOnTimeNotify = provider.isOnTimeSelected;
+      List<int> idList = widget.recurring != null
+          ? generatingIdForNotifications(
+              notifyTimestamp: newNotifyProvider.notifyTimestamp)
+          : [
+              GetIt.I<NotifyIdHelper>().creatingIdForNotify(
+                timestamp: newNotifyProvider.notifyTimestamp,
+              ),
+            ];
+
+      await database
+          .addOneTimeNotification(
+        NotifyModel(
+          time: newNotifyProvider.notifyTime,
+          message: _controllerMessage.text,
+          iconPath: newNotifyProvider.notifyIconPath,
+          isOneTime: isOnTimeNotify,
+          notifyBackgroundColors: newNotifyProvider.notifyBackColor,
+          timestamp: newNotifyProvider.notifyTimestamp,
+          idList: idList,
+          recurring: widget.recurring,
+        ),
+      )
+          .then(
+        (value) async {
+          await GetIt.I<LocalNotificationService>()
+              .showScheduleNotification(
+                title: 'test',
+                body: _controllerMessage.text,
+                payload: '',
+                timestamp: newNotifyProvider.notifyTimestamp,
+                recurring: widget.recurring,
+                idList: idList,
+              )
+              .then(
+                (value) => AutoRouter.of(context).pop(),
+              );
+        },
+      );
+    }
+  }
+
+  List<int> generatingIdForNotifications({required int notifyTimestamp}) {
+    List<int> idList = [];
+
+    for (int i = 0; i < constants.Values.repeatNotification; i++) {
+      idList.add(
+        GetIt.I<NotifyIdHelper>().creatingIdForNotify(
+          timestamp: notifyTimestamp,
+        ),
+      );
+    }
+
+    return idList;
   }
 }

@@ -76,8 +76,15 @@ class NotifyCardWidget extends StatelessWidget {
                 onTap: () {
                   final DatabaseMethods database = GetIt.I<DatabaseMethods>();
 
-                  database.removeNotification(
-                    timestamp: notify.timestamp,
+                  database
+                      .removeNotification(
+                    idToRemoveList: notify.idList,
+                  )
+                      .then(
+                    (value) {
+                      GetIt.I<LocalNotificationService>()
+                          .cancelNotification(notify.idList);
+                    },
                   );
                 },
                 child: Container(

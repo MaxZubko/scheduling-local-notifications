@@ -25,13 +25,14 @@ class DatabaseMethods {
   }
 
   Future<void> removeNotification({
-    required int timestamp,
+    required List<int> idToRemoveList,
     bool isRecurring = false,
   }) async {
     final UserModel user = Boxes.getUser().getAt(0)!;
     final List<NotifyModel> list = user.notifyList;
 
-    list.removeWhere((element) => element.timestamp == timestamp);
+    list.removeWhere(
+        (element) => element.idList.any((id) => idToRemoveList.contains(id)));
 
     await user.save();
   }
