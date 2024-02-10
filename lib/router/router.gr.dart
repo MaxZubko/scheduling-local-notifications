@@ -32,6 +32,17 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const AuthScreen(),
       );
     },
+    EditNotifyRoute.name: (routeData) {
+      final args = routeData.argsAs<EditNotifyRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: EditNotifyScreen(
+          key: args.key,
+          recurring: args.recurring,
+          notify: args.notify,
+        ),
+      );
+    },
     MainRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -101,6 +112,49 @@ class AuthRoute extends PageRouteInfo<void> {
   static const String name = 'AuthRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [EditNotifyScreen]
+class EditNotifyRoute extends PageRouteInfo<EditNotifyRouteArgs> {
+  EditNotifyRoute({
+    Key? key,
+    int? recurring,
+    required NotifyModel notify,
+    List<PageRouteInfo>? children,
+  }) : super(
+          EditNotifyRoute.name,
+          args: EditNotifyRouteArgs(
+            key: key,
+            recurring: recurring,
+            notify: notify,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'EditNotifyRoute';
+
+  static const PageInfo<EditNotifyRouteArgs> page =
+      PageInfo<EditNotifyRouteArgs>(name);
+}
+
+class EditNotifyRouteArgs {
+  const EditNotifyRouteArgs({
+    this.key,
+    this.recurring,
+    required this.notify,
+  });
+
+  final Key? key;
+
+  final int? recurring;
+
+  final NotifyModel notify;
+
+  @override
+  String toString() {
+    return 'EditNotifyRouteArgs{key: $key, recurring: $recurring, notify: $notify}';
+  }
 }
 
 /// generated route for

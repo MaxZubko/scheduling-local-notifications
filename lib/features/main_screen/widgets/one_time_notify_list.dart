@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:scheduling_local_notifications_app/constants/constants.dart'
     as constants;
 import 'package:scheduling_local_notifications_app/models/models.dart';
+import 'package:scheduling_local_notifications_app/router/router.dart';
 
 import '../../../enums/enums.dart';
 import '../../../services/services.dart';
@@ -47,6 +49,7 @@ class _OneTimeNotifyListState extends State<OneTimeNotifyList> {
   void didUpdateWidget(covariant OneTimeNotifyList oldWidget) {
     if (onTimeNotifyList != widget.onTimeNotifyList) {
       onTimeNotifyList = widget.onTimeNotifyList;
+      nearestItem = _getNearestItem(onTimeNotifyList);
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -73,6 +76,8 @@ class _OneTimeNotifyListState extends State<OneTimeNotifyList> {
   }
 
   Widget _notifyCard() {
+    onTimeNotifyList.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
     return StreamBuilder<DateTime>(
         stream: _timerStream,
         builder: (context, snapshot) {
@@ -80,7 +85,7 @@ class _OneTimeNotifyListState extends State<OneTimeNotifyList> {
             final currentTime = snapshot.data!;
             if (nearestItem != null) {
               final bool isDeleteItem =
-                  OneTimeNotifyListListener().checkItemExpiry(
+                  GetIt.I<OneTimeNotifyListListener>().checkItemExpiry(
                 now: currentTime,
                 timestamp: nearestItem!.timestamp,
               );
@@ -119,11 +124,16 @@ class _OneTimeNotifyListState extends State<OneTimeNotifyList> {
                   top: 16,
                   bottom: index == onTimeNotifyList.length - 1 ? 24 : 0,
                 ),
-                child: NotifyCardWidget(
-                  notifyList: onTimeNotifyList,
-                  notify: notify,
-                  cardColor: cardColor,
-                  isIconPath: isIconPath,
+                child: GestureDetector(
+                  onTap: () {
+                    context.pushRoute(EditNotifyRoute(notify: notify));
+                  },
+                  child: NotifyCardWidget(
+                    notifyList: onTimeNotifyList,
+                    notify: notify,
+                    cardColor: cardColor,
+                    isIconPath: isIconPath,
+                  ),
                 ),
               );
             },
@@ -132,6 +142,6 @@ class _OneTimeNotifyListState extends State<OneTimeNotifyList> {
   }
 
   NotifyModel? _getNearestItem(List<NotifyModel> list) {
-    return OneTimeNotifyListListener().getNearestItem(list);
+    return GetIt.I<OneTimeNotifyListListener>().getNearestItem(list);
   }
 }

@@ -1,9 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:scheduling_local_notifications_app/constants/constants.dart'
     as constants;
 import 'package:scheduling_local_notifications_app/models/models.dart';
 
 import '../../../enums/enums.dart';
+import '../../../router/router.dart';
 import '../../../widgets/widgets.dart';
 
 class RecurringNotifyList extends StatelessWidget {
@@ -46,11 +48,17 @@ class RecurringNotifyList extends StatelessWidget {
             top: 16,
             bottom: index == recurringNotifyList.length - 1 ? 24 : 0,
           ),
-          child: NotifyCardWidget(
-            notifyList: recurringNotifyList,
-            notify: notify,
-            cardColor: cardColor,
-            isIconPath: isIconPath,
+          child: GestureDetector(
+            onTap: () {
+              context.pushRoute(
+                  EditNotifyRoute(notify: notify, recurring: notify.recurring));
+            },
+            child: NotifyCardWidget(
+              notifyList: recurringNotifyList,
+              notify: notify,
+              cardColor: cardColor,
+              isIconPath: isIconPath,
+            ),
           ),
         );
       },

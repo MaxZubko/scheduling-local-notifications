@@ -16,24 +16,48 @@ class DatabaseMethods {
     return getUser;
   }
 
-  Future<void> addOneTimeNotification(NotifyModel notify) async {
-    final UserModel user = Boxes.getUser().getAt(0)!;
+  Future<void> addNotification(NotifyModel notify) async {
+    try {
+      final UserModel user = Boxes.getUser().getAt(0)!;
 
-    user.notifyList.add(notify);
+      user.notifyList.add(notify);
 
-    await user.save();
+      await user.save();
+    } catch (e) {
+      return;
+    }
+  }
+
+  Future<void> updateNotification(NotifyModel notify) async {
+    try {
+      final UserModel user = Boxes.getUser().getAt(0)!;
+      final List<NotifyModel> list = user.notifyList;
+
+      list.removeWhere(
+          (element) => element.idList.any((id) => notify.idList.contains(id)));
+
+      user.notifyList.add(notify);
+
+      await user.save();
+    } catch (e) {
+      return;
+    }
   }
 
   Future<void> removeNotification({
     required List<int> idToRemoveList,
     bool isRecurring = false,
   }) async {
-    final UserModel user = Boxes.getUser().getAt(0)!;
-    final List<NotifyModel> list = user.notifyList;
+    try {
+      final UserModel user = Boxes.getUser().getAt(0)!;
+      final List<NotifyModel> list = user.notifyList;
 
-    list.removeWhere(
-        (element) => element.idList.any((id) => idToRemoveList.contains(id)));
+      list.removeWhere(
+          (element) => element.idList.any((id) => idToRemoveList.contains(id)));
 
-    await user.save();
+      await user.save();
+    } catch (e) {
+      return;
+    }
   }
 }

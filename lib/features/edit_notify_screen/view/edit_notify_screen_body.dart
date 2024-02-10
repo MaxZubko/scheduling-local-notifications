@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scheduling_local_notifications_app/constants/constants.dart'
     as constants;
-import 'package:scheduling_local_notifications_app/features/utils/helpers/notify_id_helper.dart';
 import 'package:scheduling_local_notifications_app/models/models.dart';
 import 'package:scheduling_local_notifications_app/widgets/widgets.dart';
 
@@ -13,32 +12,41 @@ import '../../../state/state.dart';
 
 import 'package:get_it/get_it.dart';
 
-class AddNewNotifyScreenBody extends StatefulWidget {
+class EditNotifyScreenBody extends StatefulWidget {
   final int? recurring;
-  const AddNewNotifyScreenBody({
+  final NotifyModel notify;
+  const EditNotifyScreenBody({
     super.key,
     this.recurring,
+    required this.notify,
   });
 
   @override
-  State<AddNewNotifyScreenBody> createState() => _AddNewNotifyScreenBodyState();
+  State<EditNotifyScreenBody> createState() => _EditNotifyScreenBodyState();
 }
 
-class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
+class _EditNotifyScreenBodyState extends State<EditNotifyScreenBody> {
   final TextEditingController _controllerMessage = TextEditingController();
   final FocusNode _focusNodeMessage = FocusNode();
 
   late List<TextEditingController> _controllersTimeList;
   late List<FocusNode> _focusNodesTimeList;
+  late NotifyModel _notifyModel;
 
-  bool isDisableBtn = true;
+  bool isDisableBtn = false;
 
   @override
   void initState() {
     super.initState();
-
+    _notifyModel = widget.notify;
     _controllersTimeList = List.generate(4, (index) => TextEditingController());
     _focusNodesTimeList = List.generate(4, (index) => FocusNode());
+
+    _controllerMessage.text = _notifyModel.message;
+    _controllersTimeList = addingValuesToControllers(
+      list: _controllersTimeList,
+      notifyTime: _notifyModel.time,
+    );
   }
 
   @override
@@ -55,8 +63,14 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
             hasScrollBody: false,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 24, 16, 34),
-              child: Consumer<NewNotificationProvider>(
-                builder: (context, newNotifyProvider, _) {
+              child: Consumer<EditNotificationProvider>(
+                builder: (context, editNotifyProvider, _) {
+                  if (editNotifyProvider.idList.isEmpty) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      editNotifyProvider.addNotifyInfo(_notifyModel);
+                    });
+                  }
+
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -67,7 +81,7 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
                             checkDisableBtn();
 
                             if (widget.recurring != null) {
-                              saveTime(newNotifyProvider);
+                              saveTime(editNotifyProvider);
                             }
                           }),
                       if (widget.recurring == null) ...[
@@ -75,19 +89,20 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
                         _typeTimeWidget(
                           controllersList: _controllersTimeList,
                           focusNodesList: _focusNodesTimeList,
-                          provider: newNotifyProvider,
+                          provider: editNotifyProvider,
+                          time: _notifyModel.time,
                         ),
                       ],
                       const SizedBox(height: 24),
                       SelectIconWidget(
                         selectedNotifyBackColor:
-                            newNotifyProvider.notifyBackColor,
-                        selectedNotifyIcon: newNotifyProvider.notifyIconPath,
+                            editNotifyProvider.notifyBackColor,
+                        selectedNotifyIcon: editNotifyProvider.notifyIconPath,
                         onNotifyBackColorSelected: (color) {
-                          newNotifyProvider.setNotifyBackColor(color);
+                          editNotifyProvider.setNotifyBackColor(color);
                         },
                         onNotifyIconSelected: (iconPath) {
-                          newNotifyProvider.setNotifyIcon(iconPath);
+                          editNotifyProvider.setNotifyIcon(iconPath);
                         },
                         onSavedIcon: () {},
                       ),
@@ -95,11 +110,11 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
                         child: SizedBox(height: 50),
                       ),
                       DefaultButton(
-                        title: 'Confirm',
+                        title: 'Update',
                         isDisableBtn: isDisableBtn,
                         onPressed: () {
-                          addNotify(
-                            newNotifyProvider: newNotifyProvider,
+                          editNotify(
+                            editNotifyProvider: editNotifyProvider,
                             provider: provider,
                           );
                         },
@@ -118,7 +133,8 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
   Widget _typeTimeWidget({
     required List<TextEditingController> controllersList,
     required List<FocusNode> focusNodesList,
-    required NewNotificationProvider provider,
+    required EditNotificationProvider provider,
+    required String time,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,7 +149,6 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
           focusNodesList: focusNodesList,
           onChanged: (value) {
             checkDisableBtn();
-
             if (isAllTimeFieldsFilled) {
               saveTime(provider);
             }
@@ -163,7 +178,7 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
         : true;
   }
 
-  bool saveTime(NewNotificationProvider provider) {
+  bool saveTime(EditNotificationProvider provider) {
     try {
       final DateTime now = DateTime.now();
 
@@ -218,46 +233,41 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
     }
   }
 
-  Future<void> addNotify({
-    required NewNotificationProvider newNotifyProvider,
+  Future<void> editNotify({
+    required EditNotificationProvider editNotifyProvider,
     required SwitchProvider provider,
   }) async {
     final database = GetIt.I<DatabaseMethods>();
 
-    if (newNotifyProvider.notifyTime.isNotEmpty) {
+    if (editNotifyProvider.notifyTime.isNotEmpty) {
       bool isOnTimeNotify = provider.isOnTimeSelected;
-      List<int> idList = widget.recurring != null
-          ? generatingIdForNotifications(
-              notifyTimestamp: newNotifyProvider.notifyTimestamp)
-          : [
-              GetIt.I<NotifyIdHelper>().creatingIdForNotify(
-                timestamp: newNotifyProvider.notifyTimestamp,
-              ),
-            ];
 
       await database
-          .addNotification(
+          .updateNotification(
         NotifyModel(
-          time: newNotifyProvider.notifyTime,
+          time: editNotifyProvider.notifyTime,
           message: _controllerMessage.text,
-          iconPath: newNotifyProvider.notifyIconPath,
+          iconPath: editNotifyProvider.notifyIconPath,
           isOneTime: isOnTimeNotify,
-          notifyBackgroundColors: newNotifyProvider.notifyBackColor,
-          timestamp: newNotifyProvider.notifyTimestamp,
-          idList: idList,
+          notifyBackgroundColors: editNotifyProvider.notifyBackColor,
+          timestamp: editNotifyProvider.notifyTimestamp,
+          idList: editNotifyProvider.idList,
           recurring: widget.recurring,
         ),
       )
           .then(
         (value) async {
           await GetIt.I<LocalNotificationService>()
+              .cancelNotification(editNotifyProvider.idList);
+
+          await GetIt.I<LocalNotificationService>()
               .showScheduleNotification(
                 title: 'test',
                 body: _controllerMessage.text,
                 payload: '',
-                timestamp: newNotifyProvider.notifyTimestamp,
+                timestamp: editNotifyProvider.notifyTimestamp,
                 recurring: widget.recurring,
-                idList: idList,
+                idList: editNotifyProvider.idList,
               )
               .then(
                 (value) => AutoRouter.of(context).pop(),
@@ -267,17 +277,16 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
     }
   }
 
-  List<int> generatingIdForNotifications({required int notifyTimestamp}) {
-    List<int> idList = [];
+  List<TextEditingController> addingValuesToControllers(
+      {required List<TextEditingController> list, required String notifyTime}) {
+    List<String> timeDigits =
+        notifyTime.split('').where((char) => char != ':').toList();
 
-    for (int i = 0; i < constants.Values.repeatNotification; i++) {
-      idList.add(
-        GetIt.I<NotifyIdHelper>().creatingIdForNotify(
-          timestamp: notifyTimestamp,
-        ),
-      );
+    if (timeDigits.length == list.length) {
+      for (int i = 0; i < timeDigits.length; i++) {
+        list[i].text = timeDigits[i];
+      }
     }
-
-    return idList;
+    return list;
   }
 }
