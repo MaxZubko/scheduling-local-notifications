@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:scheduling_local_notifications_app/models/models.dart';
@@ -26,6 +27,8 @@ class _MainScreenBodyState extends State<MainScreenBody> {
   void initState() {
     super.initState();
     user = Boxes.getUser();
+
+    GetIt.I<LocalNotificationService>().initialize();
   }
 
   @override
@@ -40,6 +43,7 @@ class _MainScreenBodyState extends State<MainScreenBody> {
               valueListenable: user.listenable(),
               builder: (context, box, state) {
                 final UserModel? userModel = user.getAt(0);
+
                 return Column(
                   children: [
                     if (switchProvider.isOnTimeSelected) ...[

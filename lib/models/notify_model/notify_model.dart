@@ -26,6 +26,9 @@ class NotifyModel extends HiveObject {
   @HiveField(6, defaultValue: 1)
   final int? recurring;
 
+  @HiveField(7, defaultValue: [])
+  final List<int> idList;
+
   NotifyModel({
     required this.time,
     required this.message,
@@ -34,5 +37,6 @@ class NotifyModel extends HiveObject {
     required this.notifyBackgroundColors,
     required this.timestamp,
     required this.recurring,
+    required this.idList,
   });
 }

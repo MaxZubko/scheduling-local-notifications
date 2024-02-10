@@ -26,13 +26,14 @@ class NotifyModelAdapter extends TypeAdapter<NotifyModel> {
           : fields[4] as NotifyBackgroundColors,
       timestamp: fields[5] == null ? 0 : fields[5] as int,
       recurring: fields[6] == null ? 1 : fields[6] as int?,
+      idList: fields[7] == null ? [] : (fields[7] as List).cast<int>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, NotifyModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.time)
       ..writeByte(1)
@@ -46,7 +47,9 @@ class NotifyModelAdapter extends TypeAdapter<NotifyModel> {
       ..writeByte(5)
       ..write(obj.timestamp)
       ..writeByte(6)
-      ..write(obj.recurring);
+      ..write(obj.recurring)
+      ..writeByte(7)
+      ..write(obj.idList);
   }
 
   @override
