@@ -63,7 +63,10 @@ class _OneTimeNotifyListState extends State<OneTimeNotifyList> {
   @override
   Widget build(BuildContext context) {
     if (widget.onTimeNotifyList.isNotEmpty) {
-      return _notifyCard();
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: _notifyCard(),
+      );
     } else {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 20),

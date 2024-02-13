@@ -33,6 +33,9 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
 
   bool isDisableBtn = true;
 
+  bool isError = false;
+  String errorString = '';
+
   @override
   void initState() {
     super.initState();
@@ -54,55 +57,73 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
           SliverFillRemaining(
             hasScrollBody: false,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 24, 16, 34),
+              padding: const EdgeInsets.fromLTRB(0, 24, 0, 34),
               child: Consumer<NewNotificationProvider>(
                 builder: (context, newNotifyProvider, _) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      MessageTextField(
-                          controller: _controllerMessage,
-                          focusNode: _focusNodeMessage,
-                          onChanged: () {
-                            checkDisableBtn();
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: MessageTextField(
+                            controller: _controllerMessage,
+                            focusNode: _focusNodeMessage,
+                            onChanged: () {
+                              checkDisableBtn();
 
-                            if (widget.recurring != null) {
-                              saveTime(newNotifyProvider);
-                            }
-                          }),
+                              if (widget.recurring != null) {
+                                saveTime(newNotifyProvider);
+                              }
+                            }),
+                      ),
                       if (widget.recurring == null) ...[
                         const SizedBox(height: 24),
-                        _typeTimeWidget(
-                          controllersList: _controllersTimeList,
-                          focusNodesList: _focusNodesTimeList,
-                          provider: newNotifyProvider,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: _typeTimeWidget(
+                            controllersList: _controllersTimeList,
+                            focusNodesList: _focusNodesTimeList,
+                            provider: newNotifyProvider,
+                          ),
                         ),
                       ],
                       const SizedBox(height: 24),
-                      SelectIconWidget(
-                        selectedNotifyBackColor:
-                            newNotifyProvider.notifyBackColor,
-                        selectedNotifyIcon: newNotifyProvider.notifyIconPath,
-                        onNotifyBackColorSelected: (color) {
-                          newNotifyProvider.setNotifyBackColor(color);
-                        },
-                        onNotifyIconSelected: (iconPath) {
-                          newNotifyProvider.setNotifyIcon(iconPath);
-                        },
-                        onSavedIcon: () {},
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: SelectIconWidget(
+                          selectedNotifyBackColor:
+                              newNotifyProvider.notifyBackColor,
+                          selectedNotifyIcon: newNotifyProvider.notifyIconPath,
+                          onNotifyBackColorSelected: (color) {
+                            newNotifyProvider.setNotifyBackColor(color);
+                          },
+                          onNotifyIconSelected: (iconPath) {
+                            newNotifyProvider.setNotifyIcon(iconPath);
+                          },
+                          onSavedIcon: () {},
+                        ),
                       ),
                       const Expanded(
                         child: SizedBox(height: 50),
                       ),
-                      DefaultButton(
-                        title: 'Confirm',
-                        isDisableBtn: isDisableBtn,
-                        onPressed: () {
-                          addNotify(
-                            newNotifyProvider: newNotifyProvider,
-                            provider: provider,
-                          );
-                        },
+                      ErrorsWidget(
+                        error: errorString,
+                        isError: isError,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: DefaultButton(
+                          title: 'Confirm',
+                          isDisableBtn: isDisableBtn,
+                          onPressed: () {
+                            if (!isError) {
+                              addNotify(
+                                newNotifyProvider: newNotifyProvider,
+                                provider: provider,
+                              );
+                            }
+                          },
+                        ),
                       )
                     ],
                   );
@@ -132,11 +153,15 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
           controllersList: controllersList,
           focusNodesList: focusNodesList,
           onChanged: (value) {
-            checkDisableBtn();
-
             if (isAllTimeFieldsFilled) {
               saveTime(provider);
+            } else {
+              setState(() {
+                isError = false;
+              });
             }
+
+            checkDisableBtn();
           },
         ),
       ],
@@ -144,7 +169,7 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
   }
 
   void checkDisableBtn() {
-    if (isMessageFieldFilled && isAllTimeFieldsFilled) {
+    if (isMessageFieldFilled && isAllTimeFieldsFilled && !isError) {
       isDisableBtn = false;
     } else if (!isDisableBtn) {
       isDisableBtn = true;
@@ -185,6 +210,19 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
           now.second,
           now.millisecond,
         );
+
+        // TODO error handling
+        if (hour > 23 && minutes > 59) {
+          setState(() {
+            errorString = 'Enter real time';
+            isError = true;
+          });
+        } else if (enteredTime.isBefore(now)) {
+          setState(() {
+            errorString = 'Enter a future date';
+            isError = true;
+          });
+        }
 
         final int timestamp = enteredTime.millisecondsSinceEpoch;
 

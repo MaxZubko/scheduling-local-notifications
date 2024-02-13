@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -96,7 +95,10 @@ class _AuthScreenBodyState extends State<AuthScreenBody> {
                 const Expanded(
                   child: SizedBox(height: 50),
                 ),
-                errorWidget(),
+                ErrorsWidget(
+                  error: 'The time is wrong. Try again.',
+                  isError: isError,
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: DefaultButton(
@@ -119,33 +121,6 @@ class _AuthScreenBodyState extends State<AuthScreenBody> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget errorWidget() {
-    return Visibility(
-      visible: isError,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 32),
-        child: Container(
-          height: 48,
-          color: constants.Colors.greyLight2,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              SvgPicture.asset(
-                constants.Assets.errorIcon,
-                color: constants.Colors.red,
-              ),
-              const SizedBox(width: 6),
-              const Text(
-                'The time is wrong. Try again.',
-                style: constants.Styles.robotoRedS14W500,
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
