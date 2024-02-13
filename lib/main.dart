@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'app.dart';
 import 'features/main_screen/utils/one_time_notify_list_listener.dart';
+import 'features/trigger_screen/trigger.dart';
 import 'features/utils/utils.dart';
 import 'services/services.dart';
 import 'state/state.dart';
@@ -23,6 +24,8 @@ void main() async {
 
   GetIt.I.registerLazySingleton<OneTimeNotifyListListener>(
       () => OneTimeNotifyListListener());
+
+  GetIt.I.registerLazySingleton<TriggerListHelper>(() => TriggerListHelper());
 
   runApp(
     MultiProvider(

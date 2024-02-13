@@ -1,6 +1,8 @@
 mixin Assets {
   static const String arrowLeft = 'assets/icons/arrow_left.svg';
   static const String arrowRight = 'assets/icons/arrow_right.svg';
+  static const String arrowTop = 'assets/icons/arrow_top.svg';
+  static const String arrowBottom = 'assets/icons/arrow_bottom.svg';
   static const String errorIcon = 'assets/icons/error_icon.svg';
   static const String oneTime = 'assets/icons/one_time.svg';
   static const String recurring = 'assets/icons/recurring.svg';
@@ -14,4 +16,10 @@ mixin Assets {
   static const String notificationIcon = 'assets/icons/notifications_icon.svg';
   static const String closeIcon = 'assets/icons/close_icon.svg';
   static const String errorPurpleIcon = 'assets/icons/error_purple_icon.svg';
+  // checkbox
+  static const String checkIcon = 'assets/icons/check_icon.svg';
+  // trigger list
+  static const String hierarchyIcon = 'assets/icons/hierarchy_icon.svg';
+  static const String hierarchyEndIcon = 'assets/icons/hierarchy_end_icon.svg';
+  static const String hierarchyLineIcon = 'assets/icons/hierarchy_line.svg';
 }

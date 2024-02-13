@@ -8,3 +8,4 @@ export 'add_edit_notify/icon_modal_view.dart';
 export 'add_edit_notify/message_text_field.dart';
 export 'add_edit_notify/notify_icons_list.dart';
 export 'add_edit_notify/select_icon_widget.dart';
+export 'error/error_widget.dart';

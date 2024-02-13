@@ -59,6 +59,17 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    TriggerRoute.name: (routeData) {
+      final args = routeData.argsAs<TriggerRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: TriggerScreen(
+          key: args.key,
+          title: args.title,
+          trigger: args.trigger,
+        ),
+      );
+    },
   };
 }
 
@@ -206,5 +217,48 @@ class RecurringNotifyRouteArgs {
   @override
   String toString() {
     return 'RecurringNotifyRouteArgs{key: $key, recurring: $recurring}';
+  }
+}
+
+/// generated route for
+/// [TriggerScreen]
+class TriggerRoute extends PageRouteInfo<TriggerRouteArgs> {
+  TriggerRoute({
+    Key? key,
+    required String title,
+    required int trigger,
+    List<PageRouteInfo>? children,
+  }) : super(
+          TriggerRoute.name,
+          args: TriggerRouteArgs(
+            key: key,
+            title: title,
+            trigger: trigger,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'TriggerRoute';
+
+  static const PageInfo<TriggerRouteArgs> page =
+      PageInfo<TriggerRouteArgs>(name);
+}
+
+class TriggerRouteArgs {
+  const TriggerRouteArgs({
+    this.key,
+    required this.title,
+    required this.trigger,
+  });
+
+  final Key? key;
+
+  final String title;
+
+  final int trigger;
+
+  @override
+  String toString() {
+    return 'TriggerRouteArgs{key: $key, title: $title, trigger: $trigger}';
   }
 }

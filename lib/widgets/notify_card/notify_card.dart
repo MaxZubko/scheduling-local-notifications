@@ -1,8 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:scheduling_local_notifications_app/constants/constants.dart'
     as constants;
+import 'package:scheduling_local_notifications_app/router/router.dart';
 
 import '../../models/models.dart';
 import '../../services/services.dart';
@@ -105,7 +107,7 @@ class NotifyCardWidget extends StatelessWidget {
             text2: notify.message,
           ),
           const SizedBox(height: 16),
-          _cardButton(),
+          _cardButton(context),
         ],
       ),
     );
@@ -130,7 +132,10 @@ class NotifyCardWidget extends StatelessWidget {
     );
   }
 
-  Widget _cardButton() {
+  Widget _cardButton(BuildContext context) {
+    const String firstBtnTitle = 'Select triger 1';
+    const String secondBtnTitle = 'Select triger 2';
+
     return Padding(
       padding: const EdgeInsets.only(right: 6),
       child: Row(
@@ -138,18 +143,43 @@ class NotifyCardWidget extends StatelessWidget {
         children: [
           Expanded(
             child: CardButton(
-              title: 'Select triger 1',
-              onPressed: () {},
+              title: firstBtnTitle,
+              onPressed: () {
+                navigationOnTriggerScreen(
+                  context: context,
+                  title: firstBtnTitle,
+                  trigger: 1,
+                );
+              },
             ),
           ),
           const SizedBox(width: 15),
           Expanded(
             child: CardButton(
-              title: 'Select triger 2',
-              onPressed: () {},
+              title: secondBtnTitle,
+              onPressed: () {
+                navigationOnTriggerScreen(
+                  context: context,
+                  title: secondBtnTitle,
+                  trigger: 2,
+                );
+              },
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void navigationOnTriggerScreen({
+    required BuildContext context,
+    required String title,
+    required int trigger,
+  }) {
+    context.pushRoute(
+      TriggerRoute(
+        title: title,
+        trigger: trigger,
       ),
     );
   }

@@ -35,6 +35,9 @@ class _EditNotifyScreenBodyState extends State<EditNotifyScreenBody> {
 
   bool isDisableBtn = false;
 
+  bool isError = false;
+  String errorString = '';
+
   @override
   void initState() {
     super.initState();
@@ -109,6 +112,10 @@ class _EditNotifyScreenBodyState extends State<EditNotifyScreenBody> {
                       const Expanded(
                         child: SizedBox(height: 50),
                       ),
+                      ErrorsWidget(
+                        error: errorString,
+                        isError: isError,
+                      ),
                       DefaultButton(
                         title: 'Update',
                         isDisableBtn: isDisableBtn,
@@ -148,10 +155,15 @@ class _EditNotifyScreenBodyState extends State<EditNotifyScreenBody> {
           controllersList: controllersList,
           focusNodesList: focusNodesList,
           onChanged: (value) {
-            checkDisableBtn();
             if (isAllTimeFieldsFilled) {
               saveTime(provider);
+            } else {
+              setState(() {
+                isError = false;
+              });
             }
+
+            checkDisableBtn();
           },
         ),
       ],
@@ -159,7 +171,7 @@ class _EditNotifyScreenBodyState extends State<EditNotifyScreenBody> {
   }
 
   void checkDisableBtn() {
-    if (isMessageFieldFilled && isAllTimeFieldsFilled) {
+    if (isMessageFieldFilled && isAllTimeFieldsFilled && !isError) {
       isDisableBtn = false;
     } else if (!isDisableBtn) {
       isDisableBtn = true;
@@ -200,6 +212,19 @@ class _EditNotifyScreenBodyState extends State<EditNotifyScreenBody> {
           now.second,
           now.millisecond,
         );
+
+        // TODO error handling
+        if (hour > 23 && minutes > 59) {
+          setState(() {
+            errorString = 'Enter real time';
+            isError = true;
+          });
+        } else if (enteredTime.isBefore(now)) {
+          setState(() {
+            errorString = 'Enter a future date';
+            isError = true;
+          });
+        }
 
         final int timestamp = enteredTime.millisecondsSinceEpoch;
 
