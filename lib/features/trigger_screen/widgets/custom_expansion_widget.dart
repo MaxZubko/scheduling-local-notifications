@@ -214,6 +214,7 @@ class _CustomExpansionWidgetState extends State<CustomExpansionWidget> {
                       isFirstTrigger
                           ? const SizedBox()
                           : const Expanded(child: SizedBox()),
+                      const SizedBox(width: 5),
                       const CustomCheckboxWidget(),
                     ],
                   ),

@@ -88,7 +88,6 @@ class _TriggerScreenBodyState extends State<TriggerScreenBody> {
               onPressed: () {
                 context.popRoute();
               },
-              iconPath: constants.Assets.addIcon,
             ),
           ),
         ],
