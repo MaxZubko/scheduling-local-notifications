@@ -79,66 +79,66 @@ class _OneTimeNotifyListState extends State<OneTimeNotifyList> {
     onTimeNotifyList.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
     return StreamBuilder<DateTime>(
-        stream: _timerStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final currentTime = snapshot.data!;
-            if (nearestItem != null) {
-              final bool isDeleteItem =
-                  GetIt.I<OneTimeNotifyListListener>().checkItemExpiry(
-                now: currentTime,
-                timestamp: nearestItem!.timestamp,
-              );
+      stream: _timerStream,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final currentTime = snapshot.data!;
+          if (nearestItem != null) {
+            final bool isDeleteItem =
+                GetIt.I<OneTimeNotifyListListener>().checkItemExpiry(
+              now: currentTime,
+              timestamp: nearestItem!.timestamp,
+            );
 
-              if (isDeleteItem) {
-                final DatabaseMethods database = GetIt.I<DatabaseMethods>();
+            if (isDeleteItem) {
+              final DatabaseMethods database = GetIt.I<DatabaseMethods>();
 
-                database
-                    .removeNotification(
-                      idToRemoveList: nearestItem!.idList,
-                    )
-                    .then(
-                      (value) => nearestItem = null,
-                    );
-              }
-            } else {
-              nearestItem = _getNearestItem(onTimeNotifyList);
+              database
+                  .removeNotification(
+                    idToRemoveList: nearestItem!.idList,
+                  )
+                  .then(
+                    (value) => nearestItem = null,
+                  );
             }
+          } else {
+            nearestItem = _getNearestItem(onTimeNotifyList);
           }
+        }
 
-          return ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: onTimeNotifyList.length,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              final NotifyModel notify = onTimeNotifyList[index];
-              final bool isIconPath =
-                  notify.iconPath != NotifyIconsEnums.none.path;
-              final Color cardColor =
-                  notify.notifyBackgroundColors == NotifyBackgroundColors.none
-                      ? constants.Colors.greyLight3
-                      : notify.notifyBackgroundColors.color;
+        return ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: onTimeNotifyList.length,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            final NotifyModel notify = onTimeNotifyList[index];
+            final bool isIconPath =
+                notify.iconPath != NotifyIconsEnums.none.path;
+            final Color cardColor =
+                notify.notifyBackgroundColors == NotifyBackgroundColors.none
+                    ? constants.Colors.greyLight3
+                    : notify.notifyBackgroundColors.color;
 
-              return Padding(
-                padding: EdgeInsets.only(
-                  top: 16,
-                  bottom: index == onTimeNotifyList.length - 1 ? 24 : 0,
+            return Padding(
+              padding: const EdgeInsets.only(
+                top: 16,
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  context.pushRoute(EditNotifyRoute(notify: notify));
+                },
+                child: NotifyCardWidget(
+                  notifyList: onTimeNotifyList,
+                  notify: notify,
+                  cardColor: cardColor,
+                  isIconPath: isIconPath,
                 ),
-                child: GestureDetector(
-                  onTap: () {
-                    context.pushRoute(EditNotifyRoute(notify: notify));
-                  },
-                  child: NotifyCardWidget(
-                    notifyList: onTimeNotifyList,
-                    notify: notify,
-                    cardColor: cardColor,
-                    isIconPath: isIconPath,
-                  ),
-                ),
-              );
-            },
-          );
-        });
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   NotifyModel? _getNearestItem(List<NotifyModel> list) {
