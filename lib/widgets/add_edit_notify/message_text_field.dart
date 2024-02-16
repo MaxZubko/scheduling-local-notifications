@@ -54,7 +54,7 @@ class _MessageTextFieldState extends State<MessageTextField> {
         border: Border.all(
           color:
               _isFocused ? constants.Colors.purple : constants.Colors.greyLight,
-          width: 2.0,
+          width: 1,
         ),
         borderRadius: BorderRadius.circular(8.0),
       ),
@@ -62,6 +62,8 @@ class _MessageTextFieldState extends State<MessageTextField> {
         controller: widget.controller,
         focusNode: widget.focusNode,
         maxLines: 10,
+        keyboardType: TextInputType.multiline,
+        textInputAction: TextInputAction.done,
         decoration: const InputDecoration(
           hintText: 'Enter message',
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),

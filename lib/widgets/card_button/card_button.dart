@@ -71,6 +71,7 @@ class _CardButtonState extends State<CardButton> {
         // width: 158,
         height: 40,
         decoration: BoxDecoration(
+          color: constants.Colors.white,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: buttonColor,

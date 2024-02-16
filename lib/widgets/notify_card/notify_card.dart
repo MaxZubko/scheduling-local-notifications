@@ -13,11 +13,11 @@ import '../widgets.dart';
 class NotifyCardWidget extends StatelessWidget {
   final List<NotifyModel> notifyList;
   final NotifyModel notify;
-  final Color cardColor;
+  final Color iconBackground;
   final bool isIconPath;
   const NotifyCardWidget({
     super.key,
-    required this.cardColor,
+    required this.iconBackground,
     required this.isIconPath,
     required this.notify,
     required this.notifyList,
@@ -27,14 +27,15 @@ class NotifyCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: cardColor,
+        color: constants.Colors.greyLight3,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: constants.Colors.purple,
         ),
       ),
-      padding: const EdgeInsets.fromLTRB(16, 16, 10, 16),
+      padding: const EdgeInsets.fromLTRB(16, 12, 10, 16),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,6 +53,7 @@ class NotifyCardWidget extends StatelessWidget {
                         height: 32,
                         width: 32,
                         decoration: BoxDecoration(
+                          color: iconBackground,
                           shape: BoxShape.circle,
                           border: Border.all(
                             color: constants.Colors.greyDark,
@@ -61,6 +63,7 @@ class NotifyCardWidget extends StatelessWidget {
                         child: Container(
                           height: 18,
                           width: 18,
+                          color: iconBackground,
                           alignment: Alignment.center,
                           child: SvgPicture.asset(
                             notify.iconPath,
@@ -71,6 +74,7 @@ class NotifyCardWidget extends StatelessWidget {
                   _notifyInfo(
                     text1: 'Time:',
                     text2: notify.time,
+                    context: context,
                   ),
                 ],
               ),
@@ -101,12 +105,13 @@ class NotifyCardWidget extends StatelessWidget {
               ),
             ],
           ),
-          if (isIconPath) const SizedBox(height: 8),
+          isIconPath ? const SizedBox(height: 16) : const SizedBox(height: 7),
           _notifyInfo(
             text1: 'Message:',
             text2: notify.message,
+            context: context,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           _cardButton(context),
         ],
       ),
@@ -116,19 +121,27 @@ class NotifyCardWidget extends StatelessWidget {
   Widget _notifyInfo({
     required String text1,
     required String text2,
+    required BuildContext context,
   }) {
-    return Row(
-      children: [
-        Text(
-          text1,
-          style: constants.Styles.robotoGreyDarkS14W400,
-        ),
-        const SizedBox(width: 4),
-        Text(
-          text2,
-          style: constants.Styles.robotoDarkS14W700,
-        ),
-      ],
+    return IntrinsicWidth(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            text1,
+            style: constants.Styles.robotoRegularGreyDarkS14W400,
+          ),
+          const SizedBox(width: 4),
+          Expanded(
+            child: Text(
+              text2,
+              style: constants.Styles.robotoDarkS14W700,
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

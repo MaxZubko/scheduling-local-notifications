@@ -3,8 +3,8 @@ import 'package:scheduling_local_notifications_app/constants/constants.dart';
 import 'colors.dart' as colors;
 
 mixin Styles {
-  static const TextStyle robotoWhiteS16W700 = TextStyle(
-    fontFamily: Fonts.robotoMedium,
+  static const TextStyle robotoBoldWhiteS16W700 = TextStyle(
+    fontFamily: Fonts.robotoBold,
     color: colors.Colors.white,
     fontSize: 16,
     fontWeight: FontWeight.w700,
@@ -39,8 +39,8 @@ mixin Styles {
     fontWeight: FontWeight.w500,
   );
 
-  static const TextStyle robotoGreyDarkS14W400 = TextStyle(
-    fontFamily: Fonts.robotoMedium,
+  static const TextStyle robotoRegularGreyDarkS14W400 = TextStyle(
+    fontFamily: Fonts.robotoRegular,
     color: colors.Colors.greyDark,
     fontSize: 14,
     fontWeight: FontWeight.w400,
@@ -68,6 +68,13 @@ mixin Styles {
     fontWeight: FontWeight.w400,
   );
 
+  static const TextStyle robotoMediumDarkS16W500 = TextStyle(
+    fontFamily: Fonts.robotoMedium,
+    color: colors.Colors.mainDark,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+  );
+
   static const TextStyle robotoDarkS16W700 = TextStyle(
     fontFamily: Fonts.robotoMedium,
     color: colors.Colors.mainDark,
@@ -82,8 +89,8 @@ mixin Styles {
     fontWeight: FontWeight.w700,
   );
 
-  static const TextStyle robotoDarkS20W700 = TextStyle(
-    fontFamily: Fonts.robotoMedium,
+  static const TextStyle robotoBoldDarkS20W700 = TextStyle(
+    fontFamily: Fonts.robotoBold,
     color: colors.Colors.mainDark,
     fontSize: 20,
     fontWeight: FontWeight.w700,

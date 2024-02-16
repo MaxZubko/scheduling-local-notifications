@@ -31,9 +31,12 @@ class _NotifyIconsListState extends State<NotifyIconsList> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Select icons',
-          style: constants.Styles.robotoGreyDarkS16W500,
+        const Padding(
+          padding: EdgeInsets.only(left: 8.5),
+          child: Text(
+            'Select icons',
+            style: constants.Styles.robotoGreyDarkS16W500,
+          ),
         ),
         const SizedBox(height: 11),
         _backgroundList(),
@@ -60,30 +63,35 @@ class _NotifyIconsListState extends State<NotifyIconsList> {
 
               widget.onColorSelected(icon);
             },
-            child: Container(
-              height: 70,
-              width: 70,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  width: 3,
-                  color: _selectedIcon == icon
-                      ? constants.Colors.purple
-                      : Colors.transparent,
-                ),
+            child: Padding(
+              padding: EdgeInsets.only(
+                right: index == NotifyIconsEnums.values.length ? 0 : 5,
               ),
-              alignment: Alignment.center,
               child: Container(
-                height: 60,
-                width: 60,
+                height: 70,
+                width: 70,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: constants.Colors.greyLight,
+                    width: 3,
+                    color: _selectedIcon == icon
+                        ? constants.Colors.purple
+                        : Colors.transparent,
                   ),
                 ),
                 alignment: Alignment.center,
-                child: SvgPicture.asset(icon),
+                child: Container(
+                  height: 60,
+                  width: 60,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: constants.Colors.greyLight,
+                    ),
+                  ),
+                  alignment: Alignment.center,
+                  child: SvgPicture.asset(icon),
+                ),
               ),
             ),
           );

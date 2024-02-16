@@ -6,8 +6,6 @@ import 'package:scheduling_local_notifications_app/constants/constants.dart'
 import 'package:scheduling_local_notifications_app/widgets/widgets.dart';
 
 import '../../../enums/enums.dart';
-import 'background_colors_list.dart';
-import 'notify_icons_list.dart';
 
 class IconModalView extends StatefulWidget {
   final NotifyBackgroundColors selectedColor;
@@ -44,7 +42,7 @@ class _IconModalViewState extends State<IconModalView> {
           _headerModal(),
           const SizedBox(height: 16),
           _divider,
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           BackGroundColorsList(
             selectedColor: widget.selectedColor,
             onColorSelected: widget.onColorSelected,
@@ -77,7 +75,7 @@ class _IconModalViewState extends State<IconModalView> {
         children: [
           const Text(
             'Icon style',
-            style: constants.Styles.robotoDarkS20W700,
+            style: constants.Styles.robotoBoldDarkS20W700,
           ),
           GestureDetector(
             onTap: () {

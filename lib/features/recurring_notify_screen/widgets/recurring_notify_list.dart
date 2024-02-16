@@ -38,7 +38,7 @@ class RecurringNotifyList extends StatelessWidget {
       itemBuilder: (context, index) {
         final NotifyModel notify = recurringNotifyList[index];
         final bool isIconPath = notify.iconPath != NotifyIconsEnums.none.path;
-        final Color cardColor =
+        final Color iconBackground =
             notify.notifyBackgroundColors == NotifyBackgroundColors.none
                 ? constants.Colors.greyLight3
                 : notify.notifyBackgroundColors.color;
@@ -56,7 +56,7 @@ class RecurringNotifyList extends StatelessWidget {
             child: NotifyCardWidget(
               notifyList: recurringNotifyList,
               notify: notify,
-              cardColor: cardColor,
+              iconBackground: iconBackground,
               isIconPath: isIconPath,
             ),
           ),

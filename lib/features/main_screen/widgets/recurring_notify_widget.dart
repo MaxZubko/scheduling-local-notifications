@@ -25,22 +25,62 @@ class RecurringNotifyWidget extends StatelessWidget {
     );
   }
 
-  ListTile _buildListTile(BuildContext context, String title, int recurring) {
-    return ListTile(
-      onTap: () {
-        context.pushRoute(
-          RecurringNotifyRoute(recurring: recurring),
-        );
-      },
-      title: Text(
-        title,
-        style: constants.Styles.robotoDarkS16W700,
-      ),
-      tileColor: constants.Colors.greyLight3,
-      trailing: SvgPicture.asset(
-        constants.Assets.arrowRight,
-        color: constants.Colors.purple,
-      ),
+  Widget _buildListTile(BuildContext context, String title, int recurring) {
+    return Column(
+      children: [
+        // ListTile(
+        //   onTap: () {
+        //     context.pushRoute(
+        //       RecurringNotifyRoute(recurring: recurring),
+        //     );
+        //   },
+        //   title: Text(
+        //     title,
+        //     style: constants.Styles.robotoDarkS16W700,
+        //   ),
+        //   tileColor: constants.Colors.greyLight3,
+        //   trailing: SvgPicture.asset(
+        //     constants.Assets.arrowRight,
+        //     color: constants.Colors.purple,
+        //   ),
+        //   contentPadding: const EdgeInsets.only(left: 16, right: 22),
+        // ),
+        GestureDetector(
+          onTap: () => context.pushRoute(
+            RecurringNotifyRoute(recurring: recurring),
+          ),
+          child: Container(
+            height: 56,
+            decoration: const BoxDecoration(
+              color: constants.Colors.greyLight3,
+              border: Border(
+                bottom: BorderSide(
+                  color: constants.Colors.greyLight,
+                  width: 1.0,
+                ),
+              ),
+            ),
+            padding: const EdgeInsets.only(left: 16, right: 22),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  title,
+                  style: constants.Styles.robotoDarkS16W700,
+                ),
+                SvgPicture.asset(
+                  constants.Assets.arrowRight,
+                  color: constants.Colors.purple,
+                ),
+              ],
+            ),
+          ),
+        ),
+        // Container(
+        //   height: 1,
+        //   color: constants.Colors.greyLight,
+        // ),
+      ],
     );
   }
 }

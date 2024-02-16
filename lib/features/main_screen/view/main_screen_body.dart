@@ -52,6 +52,7 @@ class _MainScreenBodyState extends State<MainScreenBody> {
                       ),
                       DefaultButton(
                         title: 'Add new notification',
+                        height: 48,
                         onPressed: () {
                           context.pushRoute(AddNewNotifyRoute());
                         },
