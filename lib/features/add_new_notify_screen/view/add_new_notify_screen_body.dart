@@ -4,8 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scheduling_local_notifications_app/constants/constants.dart'
     as constants;
+import 'package:scheduling_local_notifications_app/enums/error_type_enums/error_type_enums.dart';
 import 'package:scheduling_local_notifications_app/features/utils/helpers/notify_id_helper.dart';
 import 'package:scheduling_local_notifications_app/models/models.dart';
+import 'package:scheduling_local_notifications_app/state/providers/error_provider.dart';
 import 'package:scheduling_local_notifications_app/widgets/widgets.dart';
 
 import '../../../services/services.dart';
@@ -33,9 +35,6 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
 
   bool isDisableBtn = true;
 
-  bool isError = false;
-  String errorString = '';
-
   @override
   void initState() {
     super.initState();
@@ -60,72 +59,83 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
               padding: const EdgeInsets.fromLTRB(0, 24, 0, 34),
               child: Consumer<NewNotificationProvider>(
                 builder: (context, newNotifyProvider, _) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: MessageTextField(
-                            controller: _controllerMessage,
-                            focusNode: _focusNodeMessage,
-                            onChanged: () {
-                              checkDisableBtn();
+                  return Consumer<ErrorProvider>(
+                    builder: (context, errorProvider, child) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: MessageTextField(
+                              controller: _controllerMessage,
+                              focusNode: _focusNodeMessage,
+                              onChanged: () {
+                                checkDisableBtn(errorProvider);
 
-                              if (widget.recurring != null) {
-                                saveTime(newNotifyProvider);
-                              }
-                            }),
-                      ),
-                      if (widget.recurring == null) ...[
-                        const SizedBox(height: 24),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: _typeTimeWidget(
-                            controllersList: _controllersTimeList,
-                            focusNodesList: _focusNodesTimeList,
-                            provider: newNotifyProvider,
+                                if (widget.recurring != null) {
+                                  saveTime(
+                                    newNotifyProvider: newNotifyProvider,
+                                    errorProvider: errorProvider,
+                                  );
+                                }
+                              },
+                            ),
                           ),
-                        ),
-                      ],
-                      const SizedBox(height: 24),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: SelectIconWidget(
-                          selectedNotifyBackColor:
-                              newNotifyProvider.notifyBackColor,
-                          selectedNotifyIcon: newNotifyProvider.notifyIconPath,
-                          onNotifyBackColorSelected: (color) {
-                            newNotifyProvider.setNotifyBackColor(color);
-                          },
-                          onNotifyIconSelected: (iconPath) {
-                            newNotifyProvider.setNotifyIcon(iconPath);
-                          },
-                          onSavedIcon: () {},
-                        ),
-                      ),
-                      const Expanded(
-                        child: SizedBox(height: 50),
-                      ),
-                      ErrorsWidget(
-                        error: errorString,
-                        isError: isError,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: DefaultButton(
-                          title: 'Confirm',
-                          isDisableBtn: isDisableBtn,
-                          onPressed: () {
-                            if (!isError) {
-                              addNotify(
-                                newNotifyProvider: newNotifyProvider,
-                                provider: provider,
-                              );
-                            }
-                          },
-                        ),
-                      )
-                    ],
+                          if (widget.recurring == null) ...[
+                            const SizedBox(height: 24),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: _typeTimeWidget(
+                                controllersList: _controllersTimeList,
+                                focusNodesList: _focusNodesTimeList,
+                                provider: newNotifyProvider,
+                                errorProvider: errorProvider,
+                              ),
+                            ),
+                          ],
+                          const SizedBox(height: 24),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: SelectIconWidget(
+                              selectedNotifyBackColor:
+                                  newNotifyProvider.notifyBackColor,
+                              selectedNotifyIcon:
+                                  newNotifyProvider.notifyIconPath,
+                              onNotifyBackColorSelected: (color) {
+                                newNotifyProvider.setNotifyBackColor(color);
+                              },
+                              onNotifyIconSelected: (iconPath) {
+                                newNotifyProvider.setNotifyIcon(iconPath);
+                              },
+                              onSavedIcon: () {},
+                            ),
+                          ),
+                          const Expanded(
+                            child: SizedBox(height: 50),
+                          ),
+                          ErrorsWidget(
+                            error: errorProvider.errorType.errorMessage,
+                            isError: errorProvider.isError,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: DefaultButton(
+                              title: 'Confirm',
+                              isDisableBtn: isDisableBtn,
+                              onPressed: () {
+                                if (!errorProvider.isError) {
+                                  addNotify(
+                                    newNotifyProvider: newNotifyProvider,
+                                    provider: provider,
+                                  );
+                                }
+                              },
+                            ),
+                          )
+                        ],
+                      );
+                    },
                   );
                 },
               ),
@@ -140,6 +150,7 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
     required List<TextEditingController> controllersList,
     required List<FocusNode> focusNodesList,
     required NewNotificationProvider provider,
+    required ErrorProvider errorProvider,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,22 +165,25 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
           focusNodesList: focusNodesList,
           onChanged: (value) {
             if (isAllTimeFieldsFilled) {
-              saveTime(provider);
+              saveTime(
+                newNotifyProvider: provider,
+                errorProvider: errorProvider,
+              );
             } else {
-              setState(() {
-                isError = false;
-              });
+              errorProvider.setError(ErrorTypeEnums.none, false);
             }
 
-            checkDisableBtn();
+            checkDisableBtn(errorProvider);
           },
         ),
       ],
     );
   }
 
-  void checkDisableBtn() {
-    if (isMessageFieldFilled && isAllTimeFieldsFilled && !isError) {
+  void checkDisableBtn(ErrorProvider errorProvider) {
+    if (isMessageFieldFilled &&
+        isAllTimeFieldsFilled &&
+        !errorProvider.isError) {
       isDisableBtn = false;
     } else if (!isDisableBtn) {
       isDisableBtn = true;
@@ -188,7 +202,10 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
         : true;
   }
 
-  bool saveTime(NewNotificationProvider provider) {
+  bool saveTime({
+    required NewNotificationProvider newNotifyProvider,
+    required ErrorProvider errorProvider,
+  }) {
     try {
       final DateTime now = DateTime.now();
 
@@ -211,17 +228,10 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
           now.millisecond,
         );
 
-        // TODO error handling
         if (hour > 23 && minutes > 59) {
-          setState(() {
-            errorString = 'Enter real time';
-            isError = true;
-          });
+          errorProvider.setError(ErrorTypeEnums.incorrectTime, true);
         } else if (enteredTime.isBefore(now)) {
-          setState(() {
-            errorString = 'Enter a future date';
-            isError = true;
-          });
+          errorProvider.setError(ErrorTypeEnums.pastDate, true);
         }
 
         final int timestamp = enteredTime.millisecondsSinceEpoch;
@@ -229,14 +239,14 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
         final String formattedEnteredTime =
             DateFormat('HH:mm').format(enteredTime);
 
-        provider.setNotifyTime(
+        newNotifyProvider.setNotifyTime(
           time: formattedEnteredTime,
           timestamp: timestamp,
         );
       } else {
         final int timestamp = now.millisecondsSinceEpoch;
 
-        provider.setNotifyTime(
+        newNotifyProvider.setNotifyTime(
           time: getTimeForRecurringNotify,
           timestamp: timestamp,
         );

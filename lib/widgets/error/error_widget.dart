@@ -15,19 +15,21 @@ class ErrorsWidget extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(bottom: 32),
         child: Container(
-          height: 48,
+          // height: 48,
           color: constants.Colors.greyLight2,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           child: Row(
             children: [
               SvgPicture.asset(
                 constants.Assets.errorIcon,
                 color: constants.Colors.red,
               ),
-              const SizedBox(width: 6),
-              Text(
-                error,
-                style: constants.Styles.robotoRedS14W500,
+              const SizedBox(width: 7),
+              Expanded(
+                child: Text(
+                  error,
+                  style: constants.Styles.robotoRedS14W500,
+                ),
               ),
             ],
           ),

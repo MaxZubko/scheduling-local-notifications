@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:scheduling_local_notifications_app/constants/constants.dart';
 import 'colors.dart' as colors;
 
 mixin Styles {
   static const TextStyle robotoWhiteS16W700 = TextStyle(
+    fontFamily: Fonts.robotoMedium,
     color: colors.Colors.white,
     fontSize: 16,
     fontWeight: FontWeight.w700,
@@ -10,30 +12,35 @@ mixin Styles {
 
   // grey
   static const TextStyle robotoGreyS32W700 = TextStyle(
+    fontFamily: Fonts.robotoMedium,
     color: colors.Colors.grey,
     fontSize: 32,
     fontWeight: FontWeight.w700,
   );
 
   static const TextStyle robotoGreyS16W400 = TextStyle(
+    fontFamily: Fonts.robotoMedium,
     color: colors.Colors.grey,
     fontSize: 16,
     fontWeight: FontWeight.w400,
   );
 
-  static const TextStyle robotoGreyDarkS16W400 = TextStyle(
+  static const TextStyle robotoRegularGreyDarkS16W400 = TextStyle(
+    fontFamily: Fonts.robotoRegular,
     color: colors.Colors.greyDark,
     fontSize: 16,
     fontWeight: FontWeight.w400,
   );
 
   static const TextStyle robotoGreyDarkS16W500 = TextStyle(
+    fontFamily: Fonts.robotoMedium,
     color: colors.Colors.greyDark,
     fontSize: 16,
     fontWeight: FontWeight.w500,
   );
 
   static const TextStyle robotoGreyDarkS14W400 = TextStyle(
+    fontFamily: Fonts.robotoMedium,
     color: colors.Colors.greyDark,
     fontSize: 14,
     fontWeight: FontWeight.w400,
@@ -41,42 +48,56 @@ mixin Styles {
 
   // dark
   static const TextStyle robotoDarkS14W500 = TextStyle(
+    fontFamily: Fonts.robotoMedium,
     color: colors.Colors.mainDark,
     fontSize: 14,
     fontWeight: FontWeight.w500,
   );
 
   static const TextStyle robotoDarkS14W700 = TextStyle(
+    fontFamily: Fonts.robotoMedium,
     color: colors.Colors.mainDark,
     fontSize: 14,
     fontWeight: FontWeight.w700,
   );
 
   static const TextStyle robotoDarkS16W400 = TextStyle(
+    fontFamily: Fonts.robotoMedium,
     color: colors.Colors.mainDark,
     fontSize: 16,
     fontWeight: FontWeight.w400,
   );
 
   static const TextStyle robotoDarkS16W700 = TextStyle(
+    fontFamily: Fonts.robotoMedium,
+    color: colors.Colors.mainDark,
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const TextStyle robotoBoldDarkS16W700 = TextStyle(
+    fontFamily: Fonts.robotoBold,
     color: colors.Colors.mainDark,
     fontSize: 16,
     fontWeight: FontWeight.w700,
   );
 
   static const TextStyle robotoDarkS20W700 = TextStyle(
+    fontFamily: Fonts.robotoMedium,
     color: colors.Colors.mainDark,
     fontSize: 20,
     fontWeight: FontWeight.w700,
   );
 
-  static const TextStyle robotoDarkS24W700 = TextStyle(
+  static const TextStyle robotoBoldDarkS24W700 = TextStyle(
+    fontFamily: Fonts.robotoBold,
     color: colors.Colors.mainDark,
     fontSize: 24,
     fontWeight: FontWeight.w700,
   );
 
   static const TextStyle robotoDarkS32W700 = TextStyle(
+    fontFamily: Fonts.robotoMedium,
     color: colors.Colors.mainDark,
     fontSize: 32,
     fontWeight: FontWeight.w700,
@@ -85,6 +106,7 @@ mixin Styles {
   // red
   // auth error
   static const TextStyle robotoRedS14W500 = TextStyle(
+    fontFamily: Fonts.robotoMedium,
     color: colors.Colors.red,
     fontSize: 14,
     fontWeight: FontWeight.w500,
@@ -92,6 +114,7 @@ mixin Styles {
 
   // purple
   static const TextStyle robotoPurpleS14W700 = TextStyle(
+    fontFamily: Fonts.robotoMedium,
     color: colors.Colors.purple,
     fontSize: 14,
     fontWeight: FontWeight.w700,

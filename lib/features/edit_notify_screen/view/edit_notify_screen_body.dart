@@ -4,7 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scheduling_local_notifications_app/constants/constants.dart'
     as constants;
+import 'package:scheduling_local_notifications_app/enums/error_type_enums/error_type_enums.dart';
 import 'package:scheduling_local_notifications_app/models/models.dart';
+import 'package:scheduling_local_notifications_app/state/providers/error_provider.dart';
 import 'package:scheduling_local_notifications_app/widgets/widgets.dart';
 
 import '../../../services/services.dart';
@@ -34,9 +36,6 @@ class _EditNotifyScreenBodyState extends State<EditNotifyScreenBody> {
   late NotifyModel _notifyModel;
 
   bool isDisableBtn = false;
-
-  bool isError = false;
-  String errorString = '';
 
   @override
   void initState() {
@@ -74,59 +73,68 @@ class _EditNotifyScreenBodyState extends State<EditNotifyScreenBody> {
                     });
                   }
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MessageTextField(
-                          controller: _controllerMessage,
-                          focusNode: _focusNodeMessage,
-                          onChanged: () {
-                            checkDisableBtn();
+                  return Consumer<ErrorProvider>(
+                    builder: (context, errorProvider, child) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MessageTextField(
+                              controller: _controllerMessage,
+                              focusNode: _focusNodeMessage,
+                              onChanged: () {
+                                checkDisableBtn(errorProvider);
 
-                            if (widget.recurring != null) {
-                              saveTime(editNotifyProvider);
-                            }
-                          }),
-                      if (widget.recurring == null) ...[
-                        const SizedBox(height: 24),
-                        _typeTimeWidget(
-                          controllersList: _controllersTimeList,
-                          focusNodesList: _focusNodesTimeList,
-                          provider: editNotifyProvider,
-                          time: _notifyModel.time,
-                        ),
-                      ],
-                      const SizedBox(height: 24),
-                      SelectIconWidget(
-                        selectedNotifyBackColor:
-                            editNotifyProvider.notifyBackColor,
-                        selectedNotifyIcon: editNotifyProvider.notifyIconPath,
-                        onNotifyBackColorSelected: (color) {
-                          editNotifyProvider.setNotifyBackColor(color);
-                        },
-                        onNotifyIconSelected: (iconPath) {
-                          editNotifyProvider.setNotifyIcon(iconPath);
-                        },
-                        onSavedIcon: () {},
-                      ),
-                      const Expanded(
-                        child: SizedBox(height: 50),
-                      ),
-                      ErrorsWidget(
-                        error: errorString,
-                        isError: isError,
-                      ),
-                      DefaultButton(
-                        title: 'Update',
-                        isDisableBtn: isDisableBtn,
-                        onPressed: () {
-                          editNotify(
-                            editNotifyProvider: editNotifyProvider,
-                            provider: provider,
-                          );
-                        },
-                      )
-                    ],
+                                if (widget.recurring != null) {
+                                  saveTime(
+                                    editNotifyProvider: editNotifyProvider,
+                                    errorProvider: errorProvider,
+                                  );
+                                }
+                              }),
+                          if (widget.recurring == null) ...[
+                            const SizedBox(height: 24),
+                            _typeTimeWidget(
+                              controllersList: _controllersTimeList,
+                              focusNodesList: _focusNodesTimeList,
+                              provider: editNotifyProvider,
+                              time: _notifyModel.time,
+                              errorProvider: errorProvider,
+                            ),
+                          ],
+                          const SizedBox(height: 24),
+                          SelectIconWidget(
+                            selectedNotifyBackColor:
+                                editNotifyProvider.notifyBackColor,
+                            selectedNotifyIcon:
+                                editNotifyProvider.notifyIconPath,
+                            onNotifyBackColorSelected: (color) {
+                              editNotifyProvider.setNotifyBackColor(color);
+                            },
+                            onNotifyIconSelected: (iconPath) {
+                              editNotifyProvider.setNotifyIcon(iconPath);
+                            },
+                            onSavedIcon: () {},
+                          ),
+                          const Expanded(
+                            child: SizedBox(height: 50),
+                          ),
+                          ErrorsWidget(
+                            error: errorProvider.errorType.errorMessage,
+                            isError: errorProvider.isError,
+                          ),
+                          DefaultButton(
+                            title: 'Update',
+                            isDisableBtn: isDisableBtn,
+                            onPressed: () {
+                              editNotify(
+                                editNotifyProvider: editNotifyProvider,
+                                provider: provider,
+                              );
+                            },
+                          )
+                        ],
+                      );
+                    },
                   );
                 },
               ),
@@ -142,6 +150,7 @@ class _EditNotifyScreenBodyState extends State<EditNotifyScreenBody> {
     required List<FocusNode> focusNodesList,
     required EditNotificationProvider provider,
     required String time,
+    required ErrorProvider errorProvider,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,22 +165,25 @@ class _EditNotifyScreenBodyState extends State<EditNotifyScreenBody> {
           focusNodesList: focusNodesList,
           onChanged: (value) {
             if (isAllTimeFieldsFilled) {
-              saveTime(provider);
+              saveTime(
+                editNotifyProvider: provider,
+                errorProvider: errorProvider,
+              );
             } else {
-              setState(() {
-                isError = false;
-              });
+              errorProvider.setError(ErrorTypeEnums.none, false);
             }
 
-            checkDisableBtn();
+            checkDisableBtn(errorProvider);
           },
         ),
       ],
     );
   }
 
-  void checkDisableBtn() {
-    if (isMessageFieldFilled && isAllTimeFieldsFilled && !isError) {
+  void checkDisableBtn(ErrorProvider errorProvider) {
+    if (isMessageFieldFilled &&
+        isAllTimeFieldsFilled &&
+        !errorProvider.isError) {
       isDisableBtn = false;
     } else if (!isDisableBtn) {
       isDisableBtn = true;
@@ -190,7 +202,10 @@ class _EditNotifyScreenBodyState extends State<EditNotifyScreenBody> {
         : true;
   }
 
-  bool saveTime(EditNotificationProvider provider) {
+  bool saveTime({
+    required EditNotificationProvider editNotifyProvider,
+    required ErrorProvider errorProvider,
+  }) {
     try {
       final DateTime now = DateTime.now();
 
@@ -213,17 +228,10 @@ class _EditNotifyScreenBodyState extends State<EditNotifyScreenBody> {
           now.millisecond,
         );
 
-        // TODO error handling
         if (hour > 23 && minutes > 59) {
-          setState(() {
-            errorString = 'Enter real time';
-            isError = true;
-          });
+          errorProvider.setError(ErrorTypeEnums.incorrectTime, true);
         } else if (enteredTime.isBefore(now)) {
-          setState(() {
-            errorString = 'Enter a future date';
-            isError = true;
-          });
+          errorProvider.setError(ErrorTypeEnums.pastDate, true);
         }
 
         final int timestamp = enteredTime.millisecondsSinceEpoch;
@@ -231,14 +239,14 @@ class _EditNotifyScreenBodyState extends State<EditNotifyScreenBody> {
         final String formattedEnteredTime =
             DateFormat('HH:mm').format(enteredTime);
 
-        provider.setNotifyTime(
+        editNotifyProvider.setNotifyTime(
           time: formattedEnteredTime,
           timestamp: timestamp,
         );
       } else {
         final int timestamp = now.millisecondsSinceEpoch;
 
-        provider.setNotifyTime(
+        editNotifyProvider.setNotifyTime(
           time: getTimeForRecurringNotify,
           timestamp: timestamp,
         );
