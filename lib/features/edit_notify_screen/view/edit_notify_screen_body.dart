@@ -228,9 +228,7 @@ class _EditNotifyScreenBodyState extends State<EditNotifyScreenBody> {
           now.millisecond,
         );
 
-        if (hour > 23 && minutes > 59) {
-          errorProvider.setError(ErrorTypeEnums.incorrectTime, true);
-        } else if (enteredTime.isBefore(now)) {
+        if (enteredTime.isBefore(now)) {
           errorProvider.setError(ErrorTypeEnums.pastDate, true);
         }
 

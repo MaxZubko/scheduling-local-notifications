@@ -51,10 +51,8 @@ class SwitchNotificationList extends StatelessWidget {
                           Text(
                             'One-time',
                             style: isOnTimeSelected
-                                ? constants.Styles.robotoWhiteS16W700
-                                : constants.Styles.robotoWhiteS16W700.copyWith(
-                                    color: constants.Colors.mainDark,
-                                  ),
+                                ? constants.Styles.robotoBoldWhiteS16W700
+                                : constants.Styles.robotoMediumDarkS16W500,
                           ),
                         ],
                       ),
@@ -88,10 +86,8 @@ class SwitchNotificationList extends StatelessWidget {
                           Text(
                             'Recurring',
                             style: !isOnTimeSelected
-                                ? constants.Styles.robotoWhiteS16W700
-                                : constants.Styles.robotoWhiteS16W700.copyWith(
-                                    color: constants.Colors.mainDark,
-                                  ),
+                                ? constants.Styles.robotoBoldWhiteS16W700
+                                : constants.Styles.robotoMediumDarkS16W500,
                           ),
                         ],
                       ),

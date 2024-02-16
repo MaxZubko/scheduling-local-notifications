@@ -78,6 +78,9 @@ class _SelectIconWidgetState extends State<SelectIconWidget> {
           height: 80,
           width: 80,
           decoration: BoxDecoration(
+            color: _selectedColor == NotifyBackgroundColors.none
+                ? constants.Colors.white
+                : _selectedColor.color,
             shape: BoxShape.circle,
             border: Border.all(color: constants.Colors.grey),
           ),

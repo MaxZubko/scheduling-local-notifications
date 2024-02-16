@@ -108,6 +108,7 @@ class _AuthScreenBodyState extends State<AuthScreenBody> {
                       child: DefaultButton(
                         title: 'Confirm',
                         isDisableBtn: isDisableBtn,
+                        borderRadius: 12,
                         onPressed: () {
                           final DatabaseMethods database =
                               GetIt.I<DatabaseMethods>();

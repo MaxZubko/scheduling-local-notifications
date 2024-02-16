@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scheduling_local_notifications_app/constants/constants.dart'
@@ -39,28 +40,26 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             padding: EdgeInsets.only(top: statusBarHeight + 15),
             child: Row(
               children: [
-                GestureDetector(
-                  onTap: () {
-                    context.popRoute();
-                  },
-                  child: Container(
-                    width: 40,
-                    height: 30,
-                    alignment: Alignment.center,
-                    child: isShowBackButton
-                        ? SvgPicture.asset(
-                            constants.Assets.arrowLeft,
-                            color: constants.Colors.white,
-                            width: 11,
-                            height: 19,
-                          )
-                        : null,
+                CupertinoButton(
+                  onPressed: () => context.popRoute(),
+                  child: SizedBox(
+                    child: SvgPicture.asset(
+                      constants.Assets.arrowLeft,
+                      color: isShowBackButton
+                          ? constants.Colors.white
+                          : Colors.transparent,
+                      width: 11,
+                      height: 19,
+                    ),
                   ),
                 ),
-                const Expanded(child: SizedBox()),
+                const Expanded(
+                    child: SizedBox(
+                  height: 30,
+                )),
                 Text(
                   title,
-                  style: constants.Styles.robotoWhiteS16W700,
+                  style: constants.Styles.robotoBoldWhiteS16W700,
                 ),
                 const SizedBox(width: 40),
                 const Expanded(child: SizedBox()),
@@ -80,6 +79,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => Size.fromHeight(
-        isExpandedAppBar ? (kToolbarHeight + 70) : kToolbarHeight,
+        isExpandedAppBar ? (kToolbarHeight + 80) : kToolbarHeight + 15,
       );
 }

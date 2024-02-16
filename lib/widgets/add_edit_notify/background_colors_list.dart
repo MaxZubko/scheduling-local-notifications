@@ -31,9 +31,12 @@ class _BackGroundColorsListState extends State<BackGroundColorsList> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Background colors',
-          style: constants.Styles.robotoGreyDarkS16W500,
+        const Padding(
+          padding: EdgeInsets.only(left: 8.5),
+          child: Text(
+            'Background colors',
+            style: constants.Styles.robotoGreyDarkS16W500,
+          ),
         ),
         const SizedBox(height: 11),
         _backgroundList(),
@@ -45,6 +48,7 @@ class _BackGroundColorsListState extends State<BackGroundColorsList> {
     return SizedBox(
       height: 70,
       child: ListView.builder(
+        padding: EdgeInsets.zero,
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         // I don't display the last element none
@@ -60,28 +64,34 @@ class _BackGroundColorsListState extends State<BackGroundColorsList> {
 
               widget.onColorSelected(color);
             },
-            child: Container(
-              height: 70,
-              width: 70,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  width: 3,
-                  color: color == _selectedColor
-                      ? constants.Colors.purple
-                      : Colors.transparent,
-                ),
+            child: Padding(
+              padding: EdgeInsets.only(
+                right:
+                    index == NotifyBackgroundColors.values.length - 1 ? 0 : 5,
               ),
-              alignment: Alignment.center,
               child: Container(
-                height: 60,
-                width: 60,
+                height: 70,
+                width: 70,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: constants.Colors.greyLight,
+                    width: 3,
+                    color: color == _selectedColor
+                        ? constants.Colors.purple
+                        : Colors.transparent,
                   ),
-                  color: color.color,
+                ),
+                alignment: Alignment.center,
+                child: Container(
+                  height: 60,
+                  width: 60,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: constants.Colors.greyLight,
+                    ),
+                    color: color.color,
+                  ),
                 ),
               ),
             ),

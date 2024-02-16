@@ -8,12 +8,16 @@ class DefaultButton extends StatefulWidget {
   final bool isDisableBtn;
   final Function() onPressed;
   final String? iconPath;
+  final double height;
+  final double borderRadius;
   const DefaultButton({
     super.key,
     this.isDisableBtn = false,
     required this.title,
     required this.onPressed,
     this.iconPath,
+    this.height = 56,
+    this.borderRadius = 8,
   });
 
   @override
@@ -71,11 +75,11 @@ class _DefaultButtonState extends State<DefaultButton> {
         }
       },
       child: Container(
-        height: 56,
+        height: widget.height,
         decoration: BoxDecoration(
           color: buttonColor,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(12),
+          borderRadius: BorderRadius.all(
+            Radius.circular(widget.borderRadius),
           ),
         ),
         child: Row(
@@ -91,7 +95,7 @@ class _DefaultButtonState extends State<DefaultButton> {
               ),
             Text(
               widget.title,
-              style: constants.Styles.robotoWhiteS16W700,
+              style: constants.Styles.robotoBoldWhiteS16W700,
             ),
           ],
         ),

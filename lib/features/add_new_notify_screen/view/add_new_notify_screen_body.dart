@@ -228,9 +228,10 @@ class _AddNewNotifyScreenBodyState extends State<AddNewNotifyScreenBody> {
           now.millisecond,
         );
 
-        if (hour > 23 && minutes > 59) {
-          errorProvider.setError(ErrorTypeEnums.incorrectTime, true);
-        } else if (enteredTime.isBefore(now)) {
+        // if (hour > 23 && minutes > 59) {
+        //   errorProvider.setError(ErrorTypeEnums.incorrectTime, true);
+        // } else
+        if (enteredTime.isBefore(now)) {
           errorProvider.setError(ErrorTypeEnums.pastDate, true);
         }
 
