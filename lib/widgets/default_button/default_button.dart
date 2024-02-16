@@ -75,7 +75,7 @@ class _DefaultButtonState extends State<DefaultButton> {
         decoration: BoxDecoration(
           color: buttonColor,
           borderRadius: const BorderRadius.all(
-            Radius.circular(8),
+            Radius.circular(12),
           ),
         ),
         child: Row(

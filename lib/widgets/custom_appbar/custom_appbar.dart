@@ -22,7 +22,17 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return Container(
       alignment: Alignment.center,
-      color: constants.Colors.mainDark,
+      decoration: BoxDecoration(
+        color: constants.Colors.mainDark,
+        boxShadow: [
+          BoxShadow(
+            color: constants.Colors.mainDark.withOpacity(0.4),
+            spreadRadius: 0,
+            blurRadius: 4,
+            offset: const Offset(0, 0.5),
+          ),
+        ],
+      ),
       child: Column(
         children: [
           Padding(

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:scheduling_local_notifications_app/constants/constants.dart'
     as constants;
+import 'package:scheduling_local_notifications_app/enums/error_type_enums/error_type_enums.dart';
+import 'package:scheduling_local_notifications_app/state/providers/error_provider.dart';
 
-class CustomTimeTextFieldWidget extends StatelessWidget {
+class CustomTimeTextFieldWidget extends StatefulWidget {
   final List<TextEditingController> controllersList;
   final List<FocusNode> focusNodesList;
   final ValueChanged<String> onChanged;
@@ -15,7 +19,18 @@ class CustomTimeTextFieldWidget extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<CustomTimeTextFieldWidget> createState() =>
+      _CustomTimeTextFieldWidgetState();
+}
+
+class _CustomTimeTextFieldWidgetState extends State<CustomTimeTextFieldWidget> {
+  // so that focus does not remain on the previous field when the user taps to change focus
+  int lastTextFieldIndex = 0;
+
+  @override
   Widget build(BuildContext context) {
+    final errorProvider = Provider.of<ErrorProvider>(context, listen: false);
+
     return SizedBox(
       height: 48,
       child: ListView.builder(
@@ -25,6 +40,15 @@ class CustomTimeTextFieldWidget extends StatelessWidget {
         itemBuilder: (context, index) {
           if (index % 2 == 0) {
             final textFieldIndex = index ~/ 2;
+            final isFirstFieldError = errorProvider.errorTypeTimeTextField
+                .contains(ErrorTypeEnums.firstTimeFieldError);
+            final isSecondFieldError = errorProvider.errorTypeTimeTextField
+                .contains(ErrorTypeEnums.thirdTimeFieldError);
+
+            final borderColor = (isFirstFieldError && textFieldIndex == 0) ||
+                    (isSecondFieldError && textFieldIndex == 2)
+                ? constants.Colors.red
+                : constants.Colors.greyLight;
 
             return Container(
               width: 44,
@@ -32,44 +56,114 @@ class CustomTimeTextFieldWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.transparent,
                 border: Border.all(
-                  color: focusNodesList[textFieldIndex].hasFocus
+                  color: widget.focusNodesList[textFieldIndex].hasFocus
                       ? constants.Colors.purple
-                      : constants.Colors.greyLight,
+                      : borderColor,
                 ),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: TextField(
-                controller: controllersList[textFieldIndex],
-                maxLength: 1,
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-                focusNode: focusNodesList[textFieldIndex],
-                onChanged: (value) {
-                  //TODO max value for hours and minutes
+              alignment: Alignment.center,
+              padding: const EdgeInsets.only(
+                left: 3,
+              ),
+              child: SizedBox(
+                height: 24,
+                child: RawKeyboardListener(
+                  focusNode: FocusNode(),
+                  onKey: (RawKeyEvent event) {
+                    if (event is RawKeyDownEvent) {
+                      if (event.logicalKey == LogicalKeyboardKey.backspace) {
+                        setState(() {
+                          widget.focusNodesList[lastTextFieldIndex].unfocus();
+                        });
 
-                  onChanged(value);
-                  if (value.isNotEmpty) {
-                    switchToNextTextField(
-                      context: context,
-                      currentIndex: textFieldIndex,
-                    );
-                  } else {
-                    switchToPreviousTextField(
-                      context: context,
-                      currentIndex: textFieldIndex,
-                    );
-                  }
-                },
-                cursorColor: constants.Colors.purple,
-                decoration: InputDecoration(
-                  counterText: "",
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: constants.Colors.purple,
+                        switchToPreviousTextField(
+                          context: context,
+                          currentIndex: textFieldIndex,
+                        );
+
+                        errorProvider.checkTimeTextFieldValue(
+                          firstFieldController: widget.controllersList[0],
+                          thirdFieldController: widget.controllersList[2],
+                        );
+                      }
+                    }
+                  },
+                  child: TextField(
+                    controller: widget.controllersList[textFieldIndex],
+                    maxLength: 2,
+                    textAlign: TextAlign.center,
+                    scrollPadding: const EdgeInsets.all(0),
+                    keyboardType: TextInputType.number,
+                    focusNode: widget.focusNodesList[textFieldIndex],
+                    style: constants.Styles.robotoBoldDarkS16W700,
+                    cursorHeight: 20,
+                    cursorWidth: 2,
+                    onTap: () {
+                      setState(() {
+                        widget.focusNodesList[lastTextFieldIndex].unfocus();
+                      });
+
+                      // when you click on the text field, place the cursor at the end of the text
+                      widget.controllersList[textFieldIndex].selection =
+                          TextSelection.fromPosition(
+                        TextPosition(
+                            offset: widget
+                                .controllersList[textFieldIndex].text.length),
+                      );
+
+                      if (!widget.focusNodesList[textFieldIndex].hasFocus) {
+                        // If the element is not in focus, request focus
+                        FocusScope.of(context).requestFocus(
+                            widget.focusNodesList[textFieldIndex]);
+                      }
+                    },
+                    onChanged: (value) {
+                      String formattedValue;
+                      if (value.isNotEmpty) {
+                        if (value.length == 2) {
+                          formattedValue = value.substring(1);
+                          final textController =
+                              widget.controllersList[textFieldIndex];
+                          textController.text = formattedValue;
+                        } else {
+                          formattedValue = value;
+                        }
+
+                        errorProvider.checkTimeTextFieldValue(
+                          firstFieldController: widget.controllersList[0],
+                          thirdFieldController: widget.controllersList[2],
+                        );
+
+                        switchToNextTextField(
+                          context: context,
+                          currentIndex: textFieldIndex,
+                        );
+                      } else {
+                        switchToPreviousTextField(
+                          context: context,
+                          currentIndex: textFieldIndex,
+                        );
+                      }
+
+                      widget.onChanged(value);
+                    },
+                    onEditingComplete: () {
+                      FocusScope.of(context).unfocus();
+                    },
+                    cursorColor: constants.Colors.mainDark,
+                    decoration: const InputDecoration(
+                      counterText: "",
+                      isDense: true,
+                      contentPadding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.transparent,
+                        ),
+                      ),
+                      enabledBorder: InputBorder.none,
                     ),
-                    borderRadius: BorderRadius.circular(8),
                   ),
-                  enabledBorder: InputBorder.none,
                 ),
               ),
             );
@@ -94,8 +188,10 @@ class CustomTimeTextFieldWidget extends StatelessWidget {
 
   void switchToNextTextField(
       {required BuildContext context, required int currentIndex}) {
-    if (currentIndex < controllersList.length - 1) {
-      FocusScope.of(context).requestFocus(focusNodesList[currentIndex + 1]);
+    if (currentIndex < widget.controllersList.length - 1) {
+      FocusScope.of(context)
+          .requestFocus(widget.focusNodesList[currentIndex + 1]);
+      lastTextFieldIndex = currentIndex + 1;
     } else {
       FocusScope.of(context).unfocus();
     }
@@ -104,7 +200,9 @@ class CustomTimeTextFieldWidget extends StatelessWidget {
   void switchToPreviousTextField(
       {required BuildContext context, required int currentIndex}) {
     if (currentIndex > 0) {
-      FocusScope.of(context).requestFocus(focusNodesList[currentIndex - 1]);
+      FocusScope.of(context)
+          .requestFocus(widget.focusNodesList[currentIndex - 1]);
+      lastTextFieldIndex = currentIndex - 1;
     }
   }
 }

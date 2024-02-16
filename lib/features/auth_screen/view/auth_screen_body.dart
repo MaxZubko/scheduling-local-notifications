@@ -4,7 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scheduling_local_notifications_app/constants/constants.dart'
     as constants;
+import 'package:scheduling_local_notifications_app/enums/error_type_enums/error_type_enums.dart';
 import 'package:scheduling_local_notifications_app/services/database/src/database_methods.dart';
+import 'package:scheduling_local_notifications_app/state/providers/error_provider.dart';
 import 'package:scheduling_local_notifications_app/state/state.dart';
 import 'package:scheduling_local_notifications_app/widgets/widgets.dart';
 
@@ -24,7 +26,6 @@ class _AuthScreenBodyState extends State<AuthScreenBody> {
   late String formattedCurrentTime = DateFormat('HH:mm').format(currentTime);
 
   bool isDisableBtn = true;
-  bool isError = false;
 
   @override
   void initState() {
@@ -55,69 +56,74 @@ class _AuthScreenBodyState extends State<AuthScreenBody> {
         slivers: [
           SliverFillRemaining(
             hasScrollBody: false,
-            child: Column(
-              children: [
-                const SizedBox(height: 72),
-                const Text(
-                  'Log In',
-                  style: constants.Styles.robotoDarkS24W700,
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Enter current time in hh : mm format',
-                  style: constants.Styles.robotoGreyDarkS16W400,
-                ),
-                const SizedBox(height: 42),
-                Text(
-                  formattedCurrentTime,
-                  style: constants.Styles.robotoDarkS32W700,
-                ),
-                const SizedBox(height: 42),
-                Align(
-                  child: CustomTimeTextFieldWidget(
-                    controllersList: controllers,
-                    focusNodesList: focusNodes,
-                    onChanged: (value) {
-                      if (isAllFieldsFilled) {
-                        isDisableBtn = !isAllFieldsFilled;
-                      } else if (!isDisableBtn) {
-                        isDisableBtn = true;
-                      }
+            child: Consumer<ErrorProvider>(
+              builder: (context, errorProvider, child) {
+                return Column(
+                  children: [
+                    const SizedBox(height: 72),
+                    const Text(
+                      'Log In',
+                      style: constants.Styles.robotoBoldDarkS24W700,
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Enter current time in hh : mm format',
+                      style: constants.Styles.robotoRegularGreyDarkS16W400,
+                    ),
+                    const SizedBox(height: 50),
+                    Text(
+                      formattedCurrentTime,
+                      style: constants.Styles.robotoDarkS32W700,
+                    ),
+                    const SizedBox(height: 50),
+                    Align(
+                      child: CustomTimeTextFieldWidget(
+                        controllersList: controllers,
+                        focusNodesList: focusNodes,
+                        onChanged: (value) {
+                          if (errorProvider.errorType ==
+                              ErrorTypeEnums.incorrectTime) {
+                            errorProvider.setError(ErrorTypeEnums.none, false);
+                          }
 
-                      if (isError) {
-                        isError = false;
-                      }
+                          if (isAllFieldsFilled && !errorProvider.isError) {
+                            isDisableBtn = !isAllFieldsFilled;
+                          } else if (!isDisableBtn) {
+                            isDisableBtn = true;
+                          }
 
-                      setState(() {});
-                    },
-                  ),
-                ),
-                const Expanded(
-                  child: SizedBox(height: 50),
-                ),
-                ErrorsWidget(
-                  error: 'The time is wrong. Try again.',
-                  isError: isError,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: DefaultButton(
-                    title: 'Confirm',
-                    isDisableBtn: isDisableBtn,
-                    onPressed: () {
-                      final DatabaseMethods database =
-                          GetIt.I<DatabaseMethods>();
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                    const Expanded(
+                      child: SizedBox(height: 50),
+                    ),
+                    ErrorsWidget(
+                      error: errorProvider.errorType.errorMessage,
+                      isError: errorProvider.isError,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: DefaultButton(
+                        title: 'Confirm',
+                        isDisableBtn: isDisableBtn,
+                        onPressed: () {
+                          final DatabaseMethods database =
+                              GetIt.I<DatabaseMethods>();
 
-                      FocusScope.of(context).unfocus();
+                          FocusScope.of(context).unfocus();
 
-                      submitForm();
+                          submitForm();
 
-                      database.getUser();
-                    },
-                  ),
-                ),
-                const SizedBox(height: 34),
-              ],
+                          database.getUser();
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 34),
+                  ],
+                );
+              },
             ),
           ),
         ],
@@ -162,9 +168,8 @@ class _AuthScreenBodyState extends State<AuthScreenBody> {
         authProvider.login(true);
       });
     } else {
-      setState(() {
-        isError = true;
-      });
+      final errorProvider = Provider.of<ErrorProvider>(context, listen: false);
+      errorProvider.setError(ErrorTypeEnums.incorrectTime, true);
     }
   }
 }

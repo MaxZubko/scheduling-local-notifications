@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:scheduling_local_notifications_app/state/providers/error_provider.dart';
 
 import 'app.dart';
 import 'features/main_screen/utils/one_time_notify_list_listener.dart';
@@ -32,6 +33,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => SwitchProvider()),
+        ChangeNotifierProvider(create: (context) => ErrorProvider()),
       ],
       child: const MyApp(),
     ),
