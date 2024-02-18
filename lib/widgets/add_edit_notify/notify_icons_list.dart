@@ -65,7 +65,7 @@ class _NotifyIconsListState extends State<NotifyIconsList> {
             },
             child: Padding(
               padding: EdgeInsets.only(
-                right: index == NotifyIconsEnums.values.length ? 0 : 5,
+                right: index == NotifyIconsEnums.values.length ? 0 : 4,
               ),
               child: Container(
                 height: 70,

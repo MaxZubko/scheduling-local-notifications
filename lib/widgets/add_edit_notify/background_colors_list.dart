@@ -67,7 +67,7 @@ class _BackGroundColorsListState extends State<BackGroundColorsList> {
             child: Padding(
               padding: EdgeInsets.only(
                 right:
-                    index == NotifyBackgroundColors.values.length - 1 ? 0 : 5,
+                    index == NotifyBackgroundColors.values.length - 1 ? 0 : 4,
               ),
               child: Container(
                 height: 70,

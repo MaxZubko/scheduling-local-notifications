@@ -76,10 +76,7 @@ class _TriggerScreenBodyState extends State<TriggerScreenBody> {
                   color: constants.Colors.grey.withOpacity(0.5),
                   spreadRadius: 5,
                   blurRadius: 7,
-                  offset: const Offset(
-                    0,
-                    -3,
-                  ),
+                  offset: const Offset(0, -3),
                 ),
               ],
             ),
@@ -101,8 +98,15 @@ class _TriggerScreenBodyState extends State<TriggerScreenBody> {
   }) {
     return Container(
       height: 56,
-      color: constants.Colors.white,
       padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: const BoxDecoration(
+        color: constants.Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: constants.Colors.greyLight,
+          ),
+        ),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

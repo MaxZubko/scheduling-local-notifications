@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scheduling_local_notifications_app/constants/constants.dart'
@@ -15,15 +16,15 @@ class _CustomCheckboxWidgetState extends State<CustomCheckboxWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
+    return CupertinoButton(
+      onPressed: () {
         setState(() {
           _isChecked = !_isChecked;
         });
       },
       child: Container(
-        height: 24,
-        width: 24,
+        height: 23,
+        width: 23,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color:
