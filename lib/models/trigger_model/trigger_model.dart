@@ -2,11 +2,13 @@ class TriggerModel {
   final String title;
   final bool isExpansion;
   final List<PartsOfDayModel> partsOfDayList;
+  bool isOpen;
 
   TriggerModel({
     required this.title,
     required this.isExpansion,
     required this.partsOfDayList,
+    this.isOpen = false,
   });
 
   static List<TriggerModel> triggerListGeneration({
@@ -127,69 +129,3 @@ class TasksModel {
     required this.title,
   });
 }
-
-// List<TriggerModel> triggerItems = [
-//   TriggerModel(
-//     title: 'Sport',
-//     isExpansion: true,
-//     partsOfDayList: [
-//       PartsOfDayModel(
-//         title: 'Morning',
-//         isExpansion: true,
-//         tasksList: [
-//           TasksModel(title: '🚴 Biking'),
-//           TasksModel(title: '🏃 Running'),
-//         ],
-//       ),
-//       PartsOfDayModel(
-//         title: 'Evening',
-//         isExpansion: true,
-//         tasksList: [
-//           TasksModel(title: '🏓 Ping Pong'),
-//           TasksModel(title: '🏐 Volleyball'),
-//         ],
-//       ),
-//       PartsOfDayModel(
-//         title: '🥊 Boxing',
-//         isExpansion: false,
-//         tasksList: [],
-//       ),
-//       PartsOfDayModel(
-//         title: '⚽ Football',
-//         isExpansion: false,
-//         tasksList: [],
-//       ),
-//     ],
-//   ),
-//   TriggerModel(
-//     title: 'Work',
-//     isExpansion: true,
-//     partsOfDayList: [
-//       PartsOfDayModel(
-//         title: '🗓️ Meeting',
-//         isExpansion: false,
-//         tasksList: [],
-//       ),
-//       PartsOfDayModel(
-//         title: '🖨️ Print document',
-//         isExpansion: false,
-//         tasksList: [],
-//       ),
-//     ],
-//   ),
-//   TriggerModel(
-//     title: '⏰ Alarm',
-//     isExpansion: false,
-//     partsOfDayList: [],
-//   ),
-//   TriggerModel(
-//     title: '🎉 Party',
-//     isExpansion: false,
-//     partsOfDayList: [],
-//   ),
-//   TriggerModel(
-//     title: '🍜 Dinner',
-//     isExpansion: false,
-//     partsOfDayList: [],
-//   ),
-// ];

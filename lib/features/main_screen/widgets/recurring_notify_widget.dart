@@ -28,23 +28,6 @@ class RecurringNotifyWidget extends StatelessWidget {
   Widget _buildListTile(BuildContext context, String title, int recurring) {
     return Column(
       children: [
-        // ListTile(
-        //   onTap: () {
-        //     context.pushRoute(
-        //       RecurringNotifyRoute(recurring: recurring),
-        //     );
-        //   },
-        //   title: Text(
-        //     title,
-        //     style: constants.Styles.robotoDarkS16W700,
-        //   ),
-        //   tileColor: constants.Colors.greyLight3,
-        //   trailing: SvgPicture.asset(
-        //     constants.Assets.arrowRight,
-        //     color: constants.Colors.purple,
-        //   ),
-        //   contentPadding: const EdgeInsets.only(left: 16, right: 22),
-        // ),
         GestureDetector(
           onTap: () => context.pushRoute(
             RecurringNotifyRoute(recurring: recurring),

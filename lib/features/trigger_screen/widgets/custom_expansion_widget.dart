@@ -21,7 +21,6 @@ class CustomExpansionWidget extends StatefulWidget {
 }
 
 class _CustomExpansionWidgetState extends State<CustomExpansionWidget> {
-  bool _isExpanded = false;
   late TriggerModel item;
 
   @override
@@ -32,137 +31,192 @@ class _CustomExpansionWidgetState extends State<CustomExpansionWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
-      title: Row(
-        children: [
-          SvgPicture.asset(
-            _isExpanded
-                ? constants.Assets.arrowTop
-                : constants.Assets.arrowBottom,
-            color: constants.Colors.purple,
-          ),
-          const SizedBox(width: 15),
-          Text(
-            item.title,
-            style: constants.Styles.robotoDarkS16W700,
-          ),
-        ],
-      ),
-      trailing: const CustomCheckboxWidget(),
-      onExpansionChanged: (bool expanded) {
+    // sport, work
+    return _expansionCard(
+      onOpen: () {
         setState(() {
-          _isExpanded = expanded;
+          item.isOpen = !item.isOpen;
         });
       },
-      children: item.partsOfDayList.isNotEmpty
-          ? [
-              for (int i = 0; i < item.partsOfDayList.length; i++) ...[
-                item.partsOfDayList[i].isExpansion
-                    ? _partsOfDayCard(
-                        partsOfDayItem: item.partsOfDayList[i],
-                        index: i,
-                        lastIndex: item.partsOfDayList.length - 1,
-                      )
-                    : _nonExpansionItem(
-                        title: item.partsOfDayList[i].title,
-                        textStyle: constants.Styles.robotoDarkS16W400,
-                        index: i,
-                        lastIndex: item.partsOfDayList.length - 1,
-                      ),
-              ],
-            ]
-          : [],
+      isOpen: item.isOpen,
+      title: item.title,
+      isFirstTriggers: true,
+      childrenList: _buildChildrenList(item),
     );
   }
 
-  Widget _partsOfDayCard({
-    required PartsOfDayModel partsOfDayItem,
-    required int index,
-    required int lastIndex,
-  }) {
-    final helper = GetIt.I<TriggerListHelper>();
-    final isFirstTrigger = widget.trigger == 1;
-
-    return SizedBox(
-      child: Column(
-        children: [
-          InkWell(
-            onTap: () {
-              setState(() {
-                partsOfDayItem.isOpen = !partsOfDayItem.isOpen;
-              });
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(left: 18.5),
-              child: SizedBox(
-                height: partsOfDayItem.title.length > 20 ? 100 : 56,
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      helper.getHierarchyIconPath(
-                          index: index, lastIndex: lastIndex),
-                    ),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Expanded(child: SizedBox()),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 16),
-                            child: Row(
-                              children: [
-                                const SizedBox(width: 10),
-                                SvgPicture.asset(
-                                  partsOfDayItem.isOpen
-                                      ? constants.Assets.arrowTop
-                                      : constants.Assets.arrowBottom,
-                                  color: constants.Colors.purple,
-                                ),
-                                const SizedBox(width: 15),
-                                Expanded(
-                                  child: Text(
-                                    partsOfDayItem.title,
-                                    style: constants.Styles.robotoDarkS16W700,
-                                    maxLines: 4,
-                                  ),
-                                ),
-                                isFirstTrigger
-                                    ? const SizedBox()
-                                    : const Expanded(child: SizedBox()),
-                                const CustomCheckboxWidget(),
-                              ],
-                            ),
-                          ),
-                          const Expanded(child: SizedBox()),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 35),
-                            child: Container(
-                              height: 1,
-                              color: constants.Colors.greyLight,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          if (partsOfDayItem.isOpen && partsOfDayItem.tasksList.isNotEmpty) ...[
-            for (var i = 0; i < partsOfDayItem.tasksList.length; i++) ...[
-              _nonExpansionItem(
-                title: partsOfDayItem.tasksList[i].title,
-                textStyle: constants.Styles.robotoDarkS16W400,
-                index: i,
-                lastIndex: partsOfDayItem.tasksList.length - 1,
-                isTask: true,
-                isFirstTrigger: isFirstTrigger,
-              ),
+  List<Widget> _buildChildrenList(TriggerModel item) {
+    return item.partsOfDayList.isNotEmpty
+        ? [
+            for (int i = 0; i < item.partsOfDayList.length; i++) ...[
+              _buildPartOfDay(item.partsOfDayList[i], i),
             ],
+          ]
+        : [];
+  }
+
+  Widget _buildPartOfDay(PartsOfDayModel partOfDay, int index) {
+    return partOfDay.isExpansion
+        ? _buildExpansionCardForPartOfDay(partOfDay, index)
+        : _buildNonExpansionCardForPartOfDay(partOfDay, index);
+  }
+
+  // morning, evening
+  Widget _buildExpansionCardForPartOfDay(PartsOfDayModel partOfDay, int index) {
+    return _expansionCard(
+      onOpen: () {
+        setState(() {
+          partOfDay.isOpen = !partOfDay.isOpen;
+        });
+      },
+      isOpen: partOfDay.isOpen,
+      title: partOfDay.title,
+      index: index,
+      lastIndex: item.partsOfDayList.length - 1,
+      childrenList: [
+        if (partOfDay.isOpen && partOfDay.tasksList.isNotEmpty) ...[
+          for (var i = 0; i < partOfDay.tasksList.length; i++) ...[
+            _buildNonExpansionCardForTasks(
+              partOfDay,
+              partOfDay.tasksList[i],
+              i,
+            ),
           ],
         ],
-      ),
+      ],
+    );
+  }
+
+  // boxing, football, meeting, print document
+  Widget _buildNonExpansionCardForPartOfDay(
+      PartsOfDayModel partOfDay, int index) {
+    return _nonExpansionItem(
+      title: partOfDay.title,
+      textStyle: constants.Styles.robotoDarkS16W400,
+      index: index,
+      lastIndex: item.partsOfDayList.length - 1,
+    );
+  }
+
+  // biking, running, ping pong, volleyball
+  Widget _buildNonExpansionCardForTasks(
+      PartsOfDayModel partOfDay, TasksModel task, int index) {
+    return _nonExpansionItem(
+      title: task.title,
+      textStyle: constants.Styles.robotoDarkS16W400,
+      index: index,
+      lastIndex: partOfDay.tasksList.length - 1,
+      isTask: true,
+    );
+  }
+
+  Widget _expansionCard({
+    required Function() onOpen,
+    required bool isOpen,
+    required String title,
+    required List<Widget> childrenList,
+    int? index,
+    int? lastIndex,
+    bool isFirstTriggers = false,
+  }) {
+    final helper = GetIt.I<TriggerListHelper>();
+    // final isFirstTrigger = widget.trigger == 1;
+    final bool isLongTitle = title.length > 20;
+
+    return Column(
+      children: [
+        InkWell(
+          onTap: () {
+            onOpen();
+          },
+          child: Container(
+            height: isLongTitle ? 100 : 57,
+            decoration: BoxDecoration(
+              border: isFirstTriggers && !isOpen
+                  ? const Border(
+                      bottom: BorderSide(
+                        color: constants.Colors.greyLight,
+                      ),
+                    )
+                  : null,
+            ),
+            padding: EdgeInsets.only(
+              left: isFirstTriggers
+                  ? 9
+                  : isLongTitle
+                      ? 20.3
+                      : 21,
+            ),
+            child: Row(
+              children: [
+                if (index != null && lastIndex != null)
+                  SvgPicture.asset(
+                    helper.getHierarchyIconPath(
+                      index: index,
+                      lastIndex: lastIndex,
+                      isLongTitle: isLongTitle,
+                    ),
+                  ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      const Expanded(child: SizedBox()),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: Row(
+                          crossAxisAlignment: isLongTitle
+                              ? CrossAxisAlignment.start
+                              : CrossAxisAlignment.center,
+                          children: [
+                            const SizedBox(width: 10),
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(top: isLongTitle ? 6 : 0),
+                              child: SvgPicture.asset(
+                                isOpen
+                                    ? constants.Assets.arrowTop
+                                    : constants.Assets.arrowBottom,
+                                color: constants.Colors.purple,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              flex: 10,
+                              child: Text(
+                                title,
+                                style: constants.Styles.robotoDarkS16W700,
+                                maxLines: 4,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            isFirstTriggers
+                                ? const SizedBox()
+                                : const Expanded(child: SizedBox()),
+                            const CustomCheckboxWidget(),
+                          ],
+                        ),
+                      ),
+                      const Expanded(child: SizedBox()),
+                      if ((isOpen && isFirstTriggers) || (!isFirstTriggers))
+                        Padding(
+                          padding: const EdgeInsets.only(left: 35),
+                          child: Container(
+                            height: 1,
+                            color: constants.Colors.greyLight,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (item.isOpen)
+          Column(
+            children: childrenList,
+          ),
+      ],
     );
   }
 
@@ -175,25 +229,42 @@ class _CustomExpansionWidgetState extends State<CustomExpansionWidget> {
     bool isFirstTrigger = false,
   }) {
     final helper = GetIt.I<TriggerListHelper>();
+    final bool isLastItem = !isFirstTrigger && index == lastIndex;
+    final bool isLongTitle = title.length > 20;
 
     return Container(
-      height: title.length > 20 ? 100 : 56,
-      color: constants.Colors.white,
-      padding: const EdgeInsets.only(left: 18.5),
+      height: title.length > 20 ? 100 : 57,
+      padding: const EdgeInsets.only(left: 21),
+      decoration: BoxDecoration(
+        color: constants.Colors.white,
+        border: isLastItem && !isTask
+            ? const Border(
+                bottom: BorderSide(
+                  color: constants.Colors.greyLight,
+                ),
+              )
+            : null,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           isTask
               ? Padding(
-                  padding: const EdgeInsets.only(left: 3, right: 18),
+                  padding: const EdgeInsets.only(left: 3, right: 23),
                   child: SvgPicture.asset(
-                    constants.Assets.hierarchyLineIcon,
+                    isLongTitle
+                        ? constants.Assets.hierarchyLongLineIcon
+                        : constants.Assets.hierarchyLineIcon,
                   ),
                 )
               : const SizedBox(),
           SvgPicture.asset(
-            helper.getHierarchyIconPath(index: index, lastIndex: lastIndex),
+            helper.getHierarchyIconPath(
+              index: index,
+              lastIndex: lastIndex,
+              isLongTitle: isLongTitle,
+            ),
           ),
           Expanded(
             child: Column(
@@ -206,14 +277,15 @@ class _CustomExpansionWidgetState extends State<CustomExpansionWidget> {
                     children: [
                       const SizedBox(width: 10),
                       Expanded(
+                        flex: 10,
                         child: Text(
                           title,
                           style: textStyle,
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      isFirstTrigger
-                          ? const SizedBox()
-                          : const Expanded(child: SizedBox()),
+                      isFirstTrigger ? const SizedBox() : const Spacer(),
                       const SizedBox(width: 5),
                       const CustomCheckboxWidget(),
                     ],
@@ -221,15 +293,14 @@ class _CustomExpansionWidgetState extends State<CustomExpansionWidget> {
                 ),
                 const Expanded(child: SizedBox()),
                 // element bottom border
-                index != lastIndex
-                    ? Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Container(
-                          height: 1,
-                          color: constants.Colors.greyLight,
-                        ),
-                      )
-                    : const SizedBox(),
+                if ((!isLastItem) || (isTask))
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Container(
+                      height: 1,
+                      color: constants.Colors.greyLight,
+                    ),
+                  ),
               ],
             ),
           ),

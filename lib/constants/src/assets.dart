@@ -20,6 +20,10 @@ mixin Assets {
   static const String checkIcon = 'assets/icons/check_icon.svg';
   // trigger list
   static const String hierarchyIcon = 'assets/icons/hierarchy_icon.svg';
+  static const String hierarchyLongIcon =
+      'assets/icons/hierarchy_long_icon.svg';
   static const String hierarchyEndIcon = 'assets/icons/hierarchy_end_icon.svg';
   static const String hierarchyLineIcon = 'assets/icons/hierarchy_line.svg';
+  static const String hierarchyLongLineIcon =
+      'assets/icons/hierarchy_long_line.svg';
 }
